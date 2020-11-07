@@ -28,7 +28,10 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    player.h \
+    table.h \
+    domino.h
 
 FORMS += \
         mainwindow.ui
