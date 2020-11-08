@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-<<<<<<< HEAD
 #include <QtWidgets/QFormLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -26,13 +25,6 @@
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
-=======
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -41,7 +33,6 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-<<<<<<< HEAD
     QVBoxLayout *verticalLayout_8;
     QStackedWidget *stackedWidget;
     QWidget *menuScreen;
@@ -70,8 +61,6 @@ public:
     QLabel *label_5;
     QPushButton *backRulesButton;
     QWidget *mainScreen;
-=======
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -80,7 +69,6 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-<<<<<<< HEAD
         MainWindow->resize(955, 685);
         MainWindow->setLayoutDirection(Qt::LeftToRight);
         centralWidget = new QWidget(MainWindow);
@@ -264,15 +252,6 @@ public:
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 955, 26));
-=======
-        MainWindow->resize(525, 424);
-        centralWidget = new QWidget(MainWindow);
-        centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        MainWindow->setCentralWidget(centralWidget);
-        menuBar = new QMenuBar(MainWindow);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 525, 22));
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -283,19 +262,15 @@ public:
 
         retranslateUi(MainWindow);
 
-<<<<<<< HEAD
         stackedWidget->setCurrentIndex(1);
 
 
-=======
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
-<<<<<<< HEAD
         menuScreenTitle->setText(QApplication::translate("MainWindow", "DOMINO KINGDOMS", Q_NULLPTR));
         newGameButton->setText(QApplication::translate("MainWindow", "NEW GAME", Q_NULLPTR));
         optionsButton->setText(QApplication::translate("MainWindow", "OPTIONS", Q_NULLPTR));
@@ -309,8 +284,6 @@ public:
         backOptionsButton->setText(QApplication::translate("MainWindow", "BACK", Q_NULLPTR));
         label_5->setText(QApplication::translate("MainWindow", "GAME RULES:", Q_NULLPTR));
         backRulesButton->setText(QApplication::translate("MainWindow", "BACK", Q_NULLPTR));
-=======
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
     } // retranslateUi
 
 };

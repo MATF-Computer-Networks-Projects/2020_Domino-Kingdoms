@@ -6,19 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-<<<<<<< HEAD
     <width>955</width>
     <height>685</height>
-=======
-    <width>525</width>
-    <height>424</height>
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-<<<<<<< HEAD
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>
@@ -304,21 +298,13 @@
     </item>
    </layout>
   </widget>
-=======
-  <widget class="QWidget" name="centralWidget"/>
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-<<<<<<< HEAD
      <width>955</width>
      <height>26</height>
-=======
-     <width>525</width>
-     <height>22</height>
->>>>>>> 5dc64f756dabf82dcfc0f44cc98ffba69ce1ec1c
     </rect>
    </property>
   </widget>
