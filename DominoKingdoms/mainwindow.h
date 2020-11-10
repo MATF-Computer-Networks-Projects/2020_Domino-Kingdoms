@@ -23,6 +23,8 @@ private slots:
     void back_clicked();
     void rulesOptionsButton_clicked();
     void back_rules_clicked();
+    void back_to_menu();
+    void back_to_game();
 
 private:
     Ui::MainWindow *ui;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>955</width>
-    <height>685</height>
+    <width>800</width>
+    <height>626</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,11 +17,11 @@
    <enum>Qt::LeftToRight</enum>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_8">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="menuScreen">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -293,7 +293,11 @@
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="mainScreen"/>
+      <widget class="QWidget" name="mainScreen">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -303,7 +307,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>955</width>
+     <width>800</width>
      <height>26</height>
     </rect>
    </property>

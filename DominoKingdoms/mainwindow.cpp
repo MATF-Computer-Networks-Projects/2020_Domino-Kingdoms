@@ -3,6 +3,12 @@
 #include <iostream>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QGridLayout>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QSizePolicy>
+#include <QLabel>
+#include <Qt>
 
 
 int backIndex = 0;
@@ -13,8 +19,64 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
-    backIndex = 0;
+    QGridLayout *qgl = new QGridLayout();
+    QPushButton *bt1 = new QPushButton("p1Button");
+    QPushButton *bt2 = new QPushButton("p2Button");
+    QPushButton *bt3 = new QPushButton("p3Button");
+    QPushButton *bt4 = new QPushButton("Domino1");
+    QPushButton *bt5 = new QPushButton("Domino2");
+    QPushButton *bt6 = new QPushButton("Domino3");
+    QPushButton *bt7 = new QPushButton("Domino4");
+    QPushButton *bt8 = new QPushButton("Domino5");
+    QPushButton *bt9 = new QPushButton("Domino6");
+    QPushButton *bt10 = new QPushButton("Domino7");
+    QPushButton *bt11 = new QPushButton("Domino8");
+    QPushButton *bt12 = new QPushButton("Deck");
+    QPushButton *bt13 = new QPushButton("Options");
+    QPushButton *bt14 = new QPushButton("Quit");
+    QLabel *scores = new QLabel(ui->mainScreen);
+    scores->setText("SCORES");
+    scores->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    QScrollArea *table = new QScrollArea(ui->mainScreen);
+    table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    bt1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt3->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt4->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt5->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt6->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt7->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt8->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt9->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt10->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt11->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt12->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt13->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    bt14->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    scores->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
+    qgl->addWidget(bt1, 11, 0, 2, 1);
+    qgl->addWidget(bt2, 11, 1, 2, 1);
+    qgl->addWidget(bt3, 11, 2, 2, 1);
+    qgl->addWidget(bt4, 0, 6, 1, 2);
+    qgl->addWidget(bt5, 2, 6, 1, 2);
+    qgl->addWidget(bt6, 4, 6, 1, 2);
+    qgl->addWidget(bt7, 6, 6, 1, 2);
+    qgl->addWidget(bt8, 0, 8, 1, 2);
+    qgl->addWidget(bt9, 2, 8, 1, 2);
+    qgl->addWidget(bt10, 4, 8, 1, 2);
+    qgl->addWidget(bt11, 6, 8, 1, 2);
+    qgl->addWidget(bt12, 0, 10, 1, 2);
+    qgl->addWidget(bt13, 11, 10, 1, 2);
+    qgl->addWidget(bt14, 12, 10, 1, 2);
+    qgl->addWidget(scores, 2, 10, 4, 2);
+    qgl->addWidget(table, 0, 0, 10, 6);
+
+    ui->mainScreen->setLayout(qgl);
+
+    connect(bt13, &QPushButton::clicked, this, &MainWindow::back_to_game);
+    connect(bt14, &QPushButton::clicked, this, &MainWindow::back_to_menu);
     connect(ui->newGameButton, &QPushButton::clicked, this, &MainWindow::newGameButton_clicked);
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButton_clicked);
@@ -31,6 +93,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::back_clicked(){
+    std::cout << backIndex << std::endl;
     ui->stackedWidget->setCurrentIndex(backIndex);
 }
 
@@ -40,6 +103,7 @@ void MainWindow::newGameButton_clicked(){
 }
 
 void MainWindow::optionsButton_clicked(){
+    std::cout << backIndex << std::endl;
     ui->stackedWidget->setCurrentIndex(2);
 }
 
@@ -58,4 +122,12 @@ void MainWindow::rulesOptionsButton_clicked(){
 
 void MainWindow::back_rules_clicked(){
     ui->stackedWidget->setCurrentIndex(2);
+}
+
+void MainWindow::back_to_game(){
+    ui->stackedWidget->setCurrentIndex(4);
+}
+
+void MainWindow::back_to_menu(){
+    ui->stackedWidget->setCurrentIndex(0);
 }
