@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->rulesOptionsButton, &QPushButton::clicked, this, &MainWindow::rulesOptionsButton_clicked);
     connect(ui->backLoginButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backOptionsButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
-    connect(ui->backRulesButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
+    connect(ui->backRulesButton, &QPushButton::clicked, this, &MainWindow::back_rules_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -31,21 +31,16 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::back_clicked(){
-    printf("EVO");
-    printf("%d", backIndex);
-    const int pom = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(backIndex);
-    backIndex = pom;
 }
 
 void MainWindow::newGameButton_clicked(){
+    backIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(1);
-    backIndex = 1;
 }
 
 void MainWindow::optionsButton_clicked(){
     ui->stackedWidget->setCurrentIndex(2);
-    backIndex = 2;
 }
 
 void MainWindow::exitButton_clicked(){
@@ -53,11 +48,14 @@ void MainWindow::exitButton_clicked(){
 }
 
 void MainWindow::startLoginButton_clicked(){
+    backIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(4);
-    backIndex = 4;
 }
 
 void MainWindow::rulesOptionsButton_clicked(){
     ui->stackedWidget->setCurrentIndex(3);
-    backIndex = 3;
+}
+
+void MainWindow::back_rules_clicked(){
+    ui->stackedWidget->setCurrentIndex(2);
 }

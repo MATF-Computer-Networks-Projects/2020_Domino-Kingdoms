@@ -22,6 +22,7 @@ private slots:
     void startLoginButton_clicked();
     void back_clicked();
     void rulesOptionsButton_clicked();
+    void back_rules_clicked();
 
 private:
     Ui::MainWindow *ui;
