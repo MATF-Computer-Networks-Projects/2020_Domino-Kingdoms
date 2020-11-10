@@ -1,20 +1,23 @@
+#include "table.hpp"
+
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "table.h"
+#include <string>
 
 class Player{
 
 private: //variables
 
-    string m_name;
+    std::string m_name;
     int m_id;
     Table m_table;
 
 public: //methods
 
-    Player(string name, int id, Table table);
+    Player(std::string name, int id, Table table);
     int countScore();
+    int get_id();
 };
 
 #endif // PLAYER_H

@@ -1,7 +1,7 @@
+#include "player.hpp"
+
 #ifndef DOMINO_HPP
 #define DOMINO_HPP
-
-#include "player.h"
 
 enum class Board_Status{
     OnTable,
@@ -22,8 +22,8 @@ public: //methods
 
     Domino(int xPos1, int yPos1, int xPos2,int yPos2,
            int width, int height, int leftId, int rightId,
-           bool currentlyCompatible, Board_Status boardStatus,
-           int value, int crownsLeft, int crownsRight, int reservedBy);
+           int value, int crownsLeft, int crownsRight,
+           int reservedBy,bool currentlyCompatible, Board_Status boardStatus);
     void rotate();
     bool compatibleWith(Domino d);
     void reserve(Player p);

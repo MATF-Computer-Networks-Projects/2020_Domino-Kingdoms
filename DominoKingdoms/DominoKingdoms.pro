@@ -25,13 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    domino.cpp \
+    player.cpp
 
 HEADERS += \
         mainwindow.h \
-    player.h \
-    table.h \
-    domino.h
+    player.hpp \
+    table.hpp \
+    domino.hpp
 
 FORMS += \
         mainwindow.ui
