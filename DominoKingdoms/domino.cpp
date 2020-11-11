@@ -1,4 +1,4 @@
-#include "domino.hpp"
+/*#include "domino.hpp"
 #include <cstdlib>
 #include <iostream>
 
@@ -48,3 +48,4 @@ bool Domino::compatibleWith(Domino d){
 void Domino::rotate(){
     // 90 deg clockwise
 }
+*/

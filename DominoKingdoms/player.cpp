@@ -1,4 +1,4 @@
-#include <string>
+/*#include <string>
 //#include "table.hpp"
 #include "player.hpp"
 
@@ -14,3 +14,4 @@ int Player::countScore(){
 int Player::get_id(){
     return m_id;
 }
+*/

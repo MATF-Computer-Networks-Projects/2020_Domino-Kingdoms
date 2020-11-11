@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->mainScreen->setLayout(qgl);
 
-    connect(bt13, &QPushButton::clicked, this, &MainWindow::back_to_game);
+    connect(bt13, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(bt14, &QPushButton::clicked, this, &MainWindow::back_to_menu);
     connect(ui->newGameButton, &QPushButton::clicked, this, &MainWindow::newGameButton_clicked);
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
@@ -103,7 +103,7 @@ void MainWindow::newGameButton_clicked(){
 }
 
 void MainWindow::optionsButton_clicked(){
-    std::cout << backIndex << std::endl;
+    backIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(2);
 }
 
