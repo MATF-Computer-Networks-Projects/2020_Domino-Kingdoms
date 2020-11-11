@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Images/wheat.jpg</file>
+        <file>Images/swamp.jpg</file>
+        <file>Images/sea.jpg</file>
+        <file>Images/mine.jpg</file>
+        <file>Images/meadow.jpg</file>
+        <file>Images/forest.jpg</file>
+    </qresource>
+</RCC>
