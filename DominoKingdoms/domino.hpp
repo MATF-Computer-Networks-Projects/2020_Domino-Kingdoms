@@ -1,5 +1,3 @@
-#include "player.hpp"
-
 #ifndef DOMINO_HPP
 #define DOMINO_HPP
 
@@ -26,7 +24,6 @@ public: //methods
            int reservedBy,bool currentlyCompatible, Board_Status boardStatus);
     void rotate();
     bool compatibleWith(Domino d);
-    void reserve(Player p);
 };
 
 #endif // DOMINO_HPP

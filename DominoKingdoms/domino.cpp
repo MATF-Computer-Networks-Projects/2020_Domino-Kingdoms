@@ -1,4 +1,4 @@
-/*#include "domino.hpp"
+#include "domino.hpp"
 #include <cstdlib>
 #include <iostream>
 
@@ -36,10 +36,6 @@ Domino::Domino(int xPos1, int yPos1, int xPos2,int yPos2,
     }
 }
 
-void Domino::reserve(Player p){
-    m_reservedBy = p.get_id();
-}
-
 bool Domino::compatibleWith(Domino d){
     // TODO
     return true;
@@ -48,4 +44,3 @@ bool Domino::compatibleWith(Domino d){
 void Domino::rotate(){
     // 90 deg clockwise
 }
-*/
