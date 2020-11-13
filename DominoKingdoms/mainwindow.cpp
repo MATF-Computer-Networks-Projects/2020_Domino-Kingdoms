@@ -80,7 +80,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->newGameButton, &QPushButton::clicked, this, &MainWindow::newGameButton_clicked);
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButton_clicked);
-    connect(ui->startLoginButton, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
+    connect(ui->joinLoginButton, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
+    connect(ui->hostLoginButton, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
     connect(ui->rulesOptionsButton, &QPushButton::clicked, this, &MainWindow::rulesOptionsButton_clicked);
     connect(ui->backLoginButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backOptionsButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
