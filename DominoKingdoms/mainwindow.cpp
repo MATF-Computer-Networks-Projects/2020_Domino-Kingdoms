@@ -8,8 +8,12 @@
 #include <QScrollBar>
 #include <QSizePolicy>
 #include <QLabel>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include <QPen>
+#include <QBrush>
 #include <Qt>
-
 
 int backIndex = 0;
 
@@ -37,9 +41,22 @@ MainWindow::MainWindow(QWidget *parent) :
     QLabel *scores = new QLabel(ui->mainScreen);
     scores->setText("SCORES");
     scores->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    QScrollArea *table = new QScrollArea(ui->mainScreen);
-    table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    QGraphicsView *qgv = new QGraphicsView(ui->mainScreen);
+    QGraphicsScene *qgs = new QGraphicsScene(ui->mainScreen);
+
+    QPixmap pm(":/Images/forest.jpg");
+    pm = pm.scaled(QSize(100,100));
+    QGraphicsPixmapItem *qgpmi = qgs->addPixmap(pm);
+    qgpmi->setPos(200,200);
+
+    for(int i = 0; i<19; i++){
+        for(int j = 0; j<19; j++){
+            QGraphicsItem *rectangle1 = qgs->addRect(100*i, 100*j, 100, 100);
+        }
+    }
+    qgv->setScene(qgs);
+    //qgv->fitInView(qgs->sceneRect(), Qt::KeepAspectRatioByExpanding);
+
     bt1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     bt2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     bt3->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -71,7 +88,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qgl->addWidget(bt13, 11, 10, 1, 2);
     qgl->addWidget(bt14, 12, 10, 1, 2);
     qgl->addWidget(scores, 2, 10, 4, 2);
-    qgl->addWidget(table, 0, 0, 10, 6);
+
+    qgl->addWidget(qgv, 0, 0, 10, 6);
 
     ui->mainScreen->setLayout(qgl);
 
