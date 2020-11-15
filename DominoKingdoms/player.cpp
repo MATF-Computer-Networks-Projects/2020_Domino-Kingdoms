@@ -2,8 +2,8 @@
 //#include "table.hpp"
 #include "player.hpp"
 
-Player::Player(std::string name, int id, Table table):
-    m_name(name), m_id(id),m_table(table){
+Player::Player(std::string name, int id):
+    m_name(name), m_id(id){
 
 }
 
@@ -12,7 +12,7 @@ int Player::countScore(){
     return 0; //to eliminate warning
 }
 
-int Player::get_id(){
+int Player::getId(){
     return m_id;
 }
 

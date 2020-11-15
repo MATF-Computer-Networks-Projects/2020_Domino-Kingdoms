@@ -1,4 +1,3 @@
-#include "table.hpp"
 #include "domino.hpp"
 
 #ifndef PLAYER_H
@@ -12,14 +11,13 @@ private: //variables
 
     std::string m_name;
     int m_id;
-    Table m_table;
 
 public: //methods
 
-    Player(std::string name, int id, Table table);
+    Player(std::string name, int id);
     int countScore();
-    int get_id();
-    void reserve_domino(Domino d);
+    int getId();
+    void reserveDomino(Domino d);
 };
 
 #endif // PLAYER_H

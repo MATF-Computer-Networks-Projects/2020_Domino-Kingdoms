@@ -32,8 +32,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     player.hpp \
-    table.hpp \
-    domino.hpp
+    domino.hpp \
+    enums.h
 
 FORMS += \
         mainwindow.ui
