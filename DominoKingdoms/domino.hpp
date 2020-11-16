@@ -2,8 +2,10 @@
 #define DOMINO_HPP
 
 #include "enums.h"
+#include <QGraphicsPixmapItem>
 
-class Domino{
+class Domino : public QGraphicsPixmapItem
+{
 
 private: //variables
 
@@ -22,7 +24,9 @@ public: //methods
            FieldType leftId, FieldType rightId);
     void rotate();
     bool compatibleWith(Domino d);
-
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
 
     int getCrownsRight();
     int getCrownsLeft();

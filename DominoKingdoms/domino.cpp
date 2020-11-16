@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include<QPainter>
+#include<QPixmap>
 
 bool correctDominoPosition(int x1, int y1, int x2, int y2){
     if(x1 == x2){
@@ -38,7 +40,7 @@ Domino::Domino(int xPos1, int yPos1, int xPos2,int yPos2,
     }
 }
 
-bool Domino::compatibleWith(Domino d){
+bool Domino::compatibleWith(Domino){
     // TODO
     return true;
 }
@@ -61,4 +63,15 @@ int Domino::getReservedBy(){
 
 void Domino::setBoardStatus(Board_Status b){
     m_boardStatus = b;
+}
+
+QRectF Domino::boundingRect() const {
+    return QRectF(0,0,m_width,m_height);
+}
+
+void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
+    QPixmap pm_1 = QPixmap(":/Images/Images/forest1.jpg");
+    painter->drawPixmap(0,0,m_width/2,m_height,pm_1);
+    QPixmap pm_2 = QPixmap(":/Images/Images/quarry1.jpg");
+    painter->drawPixmap(m_width/2,0,m_width/2,m_height,pm_2);
 }
