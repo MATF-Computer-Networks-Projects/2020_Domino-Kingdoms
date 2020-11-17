@@ -21,7 +21,11 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
+<<<<<<< HEAD
        <number>5</number>
+=======
+       <number>4</number>
+>>>>>>> a180ecb30c8d5b423161984eb304c6fef3fc8500
       </property>
       <widget class="QWidget" name="menuScreen">
        <layout class="QVBoxLayout" name="verticalLayout_4">
