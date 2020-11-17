@@ -112,11 +112,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButton_clicked);
     connect(ui->joinLoginButton, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
-    connect(ui->hostLoginButton, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
+    connect(ui->pbHost, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
     connect(ui->rulesOptionsButton, &QPushButton::clicked, this, &MainWindow::rulesOptionsButton_clicked);
     connect(ui->backLoginButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backOptionsButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backRulesButton, &QPushButton::clicked, this, &MainWindow::back_rules_clicked);
+    connect(ui->pbBackNewGame, &QPushButton::clicked, this, &MainWindow::back_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -131,7 +132,7 @@ void MainWindow::back_clicked(){
 
 void MainWindow::newGameButton_clicked(){
     backIndex = ui->stackedWidget->currentIndex();
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(5);
 }
 
 void MainWindow::optionsButton_clicked(){
