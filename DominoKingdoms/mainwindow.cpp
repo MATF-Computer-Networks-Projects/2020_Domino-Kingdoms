@@ -14,6 +14,8 @@
 #include <QPen>
 #include <QBrush>
 #include <Qt>
+#include<QPainter>
+#include "domino.hpp"
 
 int backIndex = 0;
 
@@ -44,10 +46,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsView *qgv = new QGraphicsView(ui->mainScreen);
     QGraphicsScene *qgs = new QGraphicsScene(ui->mainScreen);
 
-    QPixmap pm(":/Images/forest.jpg");
+    QPixmap pm(":/Images/Images/forest1.jpg");
     pm = pm.scaled(QSize(100,100));
     QGraphicsPixmapItem *qgpmi = qgs->addPixmap(pm);
     qgpmi->setPos(200,200);
+/***********************************************************************/
+
+    Domino *d1 = new Domino(400,400,300,400,100,100,0,0,0,0,
+                      false,Board_Status::OnBoard,FieldType::Forest,FieldType::Quarry);
+    Domino *d2 = new Domino(900,900,800,900,100,100,0,0,0,0,false,
+                       Board_Status::InDeck,FieldType::Meadow,FieldType::Water);
+    qgs->addItem(d1);
+    qgs->addItem(d2);
+
+
+/************************************************************************/
 
     for(int i = 0; i<19; i++){
         for(int j = 0; j<19; j++){

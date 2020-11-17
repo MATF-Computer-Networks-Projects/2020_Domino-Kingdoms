@@ -2,9 +2,9 @@
 #define DOMINO_HPP
 
 #include "enums.h"
-#include <QGraphicsPixmapItem>
+#include <QGraphicsItem>
 
-class Domino : public QGraphicsPixmapItem
+class Domino : public QGraphicsItem
 {
 
 private: //variables
