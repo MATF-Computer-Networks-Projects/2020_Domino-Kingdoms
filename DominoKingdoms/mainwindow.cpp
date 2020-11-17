@@ -52,10 +52,10 @@ MainWindow::MainWindow(QWidget *parent) :
     qgpmi->setPos(200,200);
 /***********************************************************************/
 
-    Domino *d1 = new Domino(400,400,300,400,100,100,0,0,0,0,
-                      false,Board_Status::OnBoard,FieldType::Forest,FieldType::Quarry);
-    Domino *d2 = new Domino(900,900,800,900,100,100,0,0,0,0,false,
-                       Board_Status::InDeck,FieldType::Meadow,FieldType::Water);
+    Domino *d1 = new Domino(500,500,500,600,100,100,2,3,1,0,
+                      false,Board_Status::OnBoard,FieldType::Forest,FieldType::Swamp);
+    Domino *d2 = new Domino(400,500,400,600,100,100,0,0,0,0,false,
+                       Board_Status::InDeck,FieldType::Meadow,FieldType::Swamp);
     qgs->addItem(d1);
     qgs->addItem(d2);
 
