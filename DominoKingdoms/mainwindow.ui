@@ -21,9 +21,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-
-       <number>5</number>
-
+       <number>3</number>
       </property>
       <widget class="QWidget" name="menuScreen">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -301,8 +299,8 @@
        <widget class="QPushButton" name="backRulesButton">
         <property name="geometry">
          <rect>
-          <x>690</x>
-          <y>510</y>
+          <x>550</x>
+          <y>460</y>
           <width>231</width>
           <height>71</height>
          </rect>
@@ -435,7 +433,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
