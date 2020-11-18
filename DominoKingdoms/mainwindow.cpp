@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsView *qgv = new QGraphicsView(ui->mainScreen);
     QGraphicsScene *qgs = new QGraphicsScene(ui->mainScreen);
 
-    QPixmap pm(":/Images/forest.jpg");
+    QPixmap pm(":/Images/Images/forest1.jpg");
     pm = pm.scaled(QSize(100,100));
     QGraphicsPixmapItem *qgpmi = qgs->addPixmap(pm);
     qgpmi->setPos(200,200);
