@@ -2,37 +2,52 @@
 #define DOMINO_HPP
 
 #include "enums.h"
-#include <QGraphicsPixmapItem>
+#include <QGraphicsItem>
 
-class Domino : public QGraphicsPixmapItem
+class Domino : public QGraphicsItem
 {
 
 private: //variables
 
     int m_xPos1, m_yPos1, m_xPos2, m_yPos2, m_width, m_height,
-        m_value, m_crownsLeft, m_crownsRight, m_reservedBy;
+        m_value, m_crowns1, m_crowns2, m_reservedBy;
     bool m_currentlyCompatible;
     Board_Status m_boardStatus;
-    FieldType m_leftId, m_rightId;
+    FieldType m_fieldType1, m_fieldType2;
 
 public: //methods
 
     Domino(int xPos1, int yPos1, int xPos2,int yPos2,
            int width, int height,
-           int value, int crownsLeft, int crownsRight,
+           int value, int crowns1, int crowns2,
            int reservedBy,bool currentlyCompatible, Board_Status boardStatus,
-           FieldType leftId, FieldType rightId);
+           FieldType ft1, FieldType ft2);
+
+    Domino(int crowns1, int crowns2,FieldType fieldType1, FieldType fieldType2, int value);
+
     void rotate();
     bool compatibleWith(Domino d);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
 
-    int getCrownsRight();
-    int getCrownsLeft();
+    int getCrowns2();
+    int getCrowns1();
     int getReservedBy();
+    int getXP1() const;
+    int getYP1() const;
+    int getXP2() const;
+    int getYP2() const;
+    int getValue();
+    int getWidth() const;
+    int getHeight() const;
+    FieldType getFieldType1() const;
+    FieldType getFieldType2() const;
 
-    void setBoardStatus(Board_Status b);
+    void setCurrentlyCompatible(bool);
+    void setBoardStatus(Board_Status);
+    void setWidth(int);
+    void setHeight(int);
 };
 
 #endif // DOMINO_HPP

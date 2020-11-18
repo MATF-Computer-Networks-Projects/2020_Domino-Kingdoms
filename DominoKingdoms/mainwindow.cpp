@@ -14,6 +14,8 @@
 #include <QPen>
 #include <QBrush>
 #include <Qt>
+#include<QPainter>
+#include "domino.hpp"
 
 int backIndex = 0;
 
@@ -48,6 +50,17 @@ MainWindow::MainWindow(QWidget *parent) :
     pm = pm.scaled(QSize(100,100));
     QGraphicsPixmapItem *qgpmi = qgs->addPixmap(pm);
     qgpmi->setPos(200,200);
+/***********************************************************************/
+
+    Domino *d1 = new Domino(500,500,500,600,100,100,2,3,1,0,
+                      false,Board_Status::OnBoard,FieldType::Forest,FieldType::Swamp);
+    Domino *d2 = new Domino(400,500,400,600,100,100,0,0,0,0,false,
+                       Board_Status::InDeck,FieldType::Meadow,FieldType::Swamp);
+    qgs->addItem(d1);
+    qgs->addItem(d2);
+
+
+/************************************************************************/
 
     for(int i = 0; i<19; i++){
         for(int j = 0; j<19; j++){
@@ -99,11 +112,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButton_clicked);
     connect(ui->joinLoginButton, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
-    connect(ui->hostLoginButton, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
+    connect(ui->pbHost, &QPushButton::clicked, this, &MainWindow::startLoginButton_clicked);
     connect(ui->rulesOptionsButton, &QPushButton::clicked, this, &MainWindow::rulesOptionsButton_clicked);
     connect(ui->backLoginButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backOptionsButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backRulesButton, &QPushButton::clicked, this, &MainWindow::back_rules_clicked);
+    connect(ui->pbBackNewGame, &QPushButton::clicked, this, &MainWindow::back_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -118,7 +132,7 @@ void MainWindow::back_clicked(){
 
 void MainWindow::newGameButton_clicked(){
     backIndex = ui->stackedWidget->currentIndex();
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(5);
 }
 
 void MainWindow::optionsButton_clicked(){
