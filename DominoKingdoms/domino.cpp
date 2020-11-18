@@ -8,7 +8,12 @@
 #include<QRectF>
 #include<QString>
 
-bool correctDominoPosition(int x1, int y1, int x2, int y2){
+bool correctDominoPosition(int x1, int y1, int x2, int y2, int w, int h){
+    x1 /= w;
+    x2 /= w;
+    y1 /= h;
+    y2 /= h;
+
     if(x1 == x2){
         if(abs(y1-y2)>1 || y1 == y2){
             std::cerr<<"Bad domino coordinates"<<std::endl;
@@ -24,6 +29,7 @@ bool correctDominoPosition(int x1, int y1, int x2, int y2){
     if(x1 != x2 && y1 != y2){
         return false;
     }
+    std::cerr<<"Correct coordinates"<<std::endl;
     return true;
 }
 
@@ -70,9 +76,9 @@ Domino::Domino(int xPos1, int yPos1, int xPos2,int yPos2,
       m_reservedBy(reservedBy), m_currentlyCompatible(currentlyCompatible),
       m_boardStatus(boardStatus), m_fieldType1(ft1), m_fieldType2(ft2)
 {
-//    if(!correctDominoPosition(m_xPos1,m_yPos1,m_xPos2,m_yPos2)){
-//        throw "impossible domino";
-//    }
+    if(!correctDominoPosition(m_xPos1,m_yPos1,m_xPos2,m_yPos2, m_width,m_height)){
+        throw "impossible domino";
+    }
 }
 
 Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldType2, int value):
@@ -88,6 +94,10 @@ Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldTy
 bool Domino::compatibleWith(Domino){
     // TODO
     return true;
+}
+
+Board_Status Domino::getBoardStatus() const{
+    return m_boardStatus;
 }
 
 int Domino::getXP1() const{
@@ -116,7 +126,10 @@ void Domino::setCurrentlyCompatible(bool cc){
 }
 
 void Domino::rotate(){
-    // 90 deg clockwise
+    //if(this->getBoardStatus() == Board_Status::OnTable){}
+    this->setTransformOriginPoint(QPoint(this->getXP1()+(this->getWidth()/2),
+                                         this->getYP1()+(this->getHeight()/2)));
+    this->setRotation(90);
 }
 
 int Domino::getCrowns2(){
@@ -159,6 +172,22 @@ FieldType Domino::getFieldType2() const{
     return m_fieldType2;
 }
 
+void Domino::setXP1(int x){
+    m_xPos1 = x;
+}
+
+void Domino::setYP1(int y){
+    m_yPos1 = y;
+}
+
+void Domino::setXP2(int x){
+    m_xPos2 = x;
+}
+
+void Domino::setYP2(int y){
+    m_yPos2 = y;
+}
+
 QRectF Domino::boundingRect() const {
     QPointF qpf1 = QPointF(this->getXP1(),this->getYP1());
     QPointF qpf2 = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
@@ -179,4 +208,7 @@ void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
         QPixmap pm_12 = QPixmap(Crowns2QString(this->getCrowns2()));
         painter->drawPixmap(this->getXP2(),this->getYP2(),this->getWidth(),this->getHeight(),pm_12);
     }
+
+
+    //painter->drawRect(this->boundingRect());
 }
