@@ -46,11 +46,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsView *qgv = new QGraphicsView(ui->mainScreen);
     QGraphicsScene *qgs = new QGraphicsScene(ui->mainScreen);
 
-//    QPixmap pm(":/Images/Images/forest1.jpg");
-//    pm = pm.scaled(QSize(100,100));
-//    QGraphicsPixmapItem *qgpmi = qgs->addPixmap(pm);
-//    qgpmi->setPos(200,200);
-
 /***********************************************************************/
 
     Domino *d1 = new Domino(500,500,500,600,100,100,2,3,1,0,
@@ -60,10 +55,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     Domino *d3 = new Domino(200,200,200,300,100,100,0,0,2,1,false,
                             Board_Status::InDeck,FieldType::Water,FieldType::Water);
+
+    Domino *d4 = new Domino(900,900,800,900,100,100,0,2,1,0,
+                            false,Board_Status::OnTable,
+                            FieldType::Meadow,FieldType::Wheat);
+
     qgs->addItem(d1);
     qgs->addItem(d2);
     qgs->addItem(d3);
-
+    qgs->addItem(d4);
 
 
 /************************************************************************/

@@ -76,6 +76,7 @@ Domino::Domino(int xPos1, int yPos1, int xPos2,int yPos2,
       m_reservedBy(reservedBy), m_currentlyCompatible(currentlyCompatible),
       m_boardStatus(boardStatus), m_fieldType1(ft1), m_fieldType2(ft2)
 {
+    m_pressed = false;
     if(!correctDominoPosition(m_xPos1,m_yPos1,m_xPos2,m_yPos2, m_width,m_height)){
         throw "impossible domino";
     }
@@ -99,6 +100,8 @@ bool Domino::compatibleWith(Domino){
 Board_Status Domino::getBoardStatus() const{
     return m_boardStatus;
 }
+
+
 
 int Domino::getXP1() const{
     return m_xPos1;
@@ -129,7 +132,33 @@ void Domino::rotate(){
     //if(this->getBoardStatus() == Board_Status::OnTable){}
     this->setTransformOriginPoint(QPoint(this->getXP1()+(this->getWidth()/2),
                                          this->getYP1()+(this->getHeight()/2)));
-    this->setRotation(90);
+
+    DominoPosition dp = this->position2DominoPosition(this->getXP1(),this->getYP1(),
+                                                      this->getXP2(),this->getYP2(),
+                                                      this->getWidth(),this->getHeight());
+    if(dp == DominoPosition::V12){
+        std::cerr<<"V12"<<std::endl;
+        this->setXP2(this->getXP1()-this->getWidth());
+        this->setYP2(this->getYP1());
+    }
+    else if(dp == DominoPosition::H21){
+        std::cerr<<"H21"<<std::endl;
+        this->setXP2(this->getXP1());
+        this->setYP2(this->getYP1()-this->getHeight());
+    }
+    else if(dp == DominoPosition::V21){
+        std::cerr<<"V21"<<std::endl;
+        this->setXP2(this->getXP1()+this->getWidth());
+        this->setYP2(this->getYP1());
+    }
+    else if(dp == DominoPosition::H12){
+        std::cerr<<"H12"<<std::endl;
+        this->setXP2(this->getXP1());
+        this->setYP2(this->getYP1()+this->getHeight());
+    }
+    else{
+        std::cerr<<"Error in domino positioning"<<std::endl;
+    }
 }
 
 int Domino::getCrowns2(){
@@ -188,13 +217,96 @@ void Domino::setYP2(int y){
     m_yPos2 = y;
 }
 
+void Domino::setPressed()
+{
+    m_pressed = true;
+}
+
+void Domino::unsetPressed(){
+    m_pressed = false;
+}
+
+bool Domino::isPressed()
+{
+    return m_pressed;
+}
+
+DominoPosition Domino::position2DominoPosition(int x1, int y1, int x2, int y2, int w, int h) const
+{
+    x1 /= w;
+    x2 /= w;
+    y1 /= h;
+    y2 /= h;
+
+    if(y1 == y2+1 && x1 == x2)
+        return DominoPosition::V12;
+    else if(y2 == y1+1 && x1 == x2)
+        return DominoPosition::V21;
+    else if(x2 == x1+1 && y1 == y2)
+        return DominoPosition::H21;
+    else if(x1 == x2+1 && y1 == y2)
+        return DominoPosition::H12;
+    else
+        return DominoPosition::error;
+}
+
+void Domino::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    std::cerr<<"PRESSED"<<std::endl;
+    this->setPressed();
+    update();
+    QGraphicsItem::mousePressEvent(event);
+}
+
+void Domino::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    std::cerr<<"RELEASED"<<std::endl;
+    this->unsetPressed();
+    update();
+    QGraphicsItem::mouseReleaseEvent(event);
+}
+
 QRectF Domino::boundingRect() const {
-    QPointF qpf1 = QPointF(this->getXP1(),this->getYP1());
-    QPointF qpf2 = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
-    return QRectF(qpf1,qpf2);
+    QPointF pointTopLeft = QPointF();
+    QPointF pointBottomRight = QPointF();
+
+    pointTopLeft = QPointF(this->getXP1(),this->getYP1());
+    pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
+
+//    DominoPosition dp = this->position2DominoPosition(this->getXP1(),this->getYP1(),
+//                                                      this->getXP2(),this->getYP2(),
+//                                                      this->getWidth(),this->getHeight());
+//    switch (dp) {
+//    case DominoPosition::H12:
+//        pointTopLeft = QPointF(this->getXP1(),this->getYP1());
+//        pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
+//        break;
+//    case DominoPosition::H21:
+//        pointTopLeft = QPointF(this->getXP2(),this->getYP2());
+//        pointBottomRight = QPointF(this->getXP1()+this->getWidth(),this->getYP1()+this->getHeight());
+//        break;
+//    case DominoPosition::V12:
+//        pointTopLeft = QPointF(this->getXP1(),this->getYP1());
+//        pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
+//        break;
+
+//    case DominoPosition::V21:
+//        pointTopLeft = QPointF(this->getXP2(),this->getYP2());
+//        pointBottomRight = QPointF(this->getXP1()+this->getWidth(),this->getYP1()+this->getHeight());
+//        break;
+
+//    default:
+//        break;
+//    }
+
+    return QRectF(pointTopLeft,pointBottomRight);
 }
 
 void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
+    if(this->isPressed()){
+        this->rotate();
+        this->unsetPressed();
+    }
     QPixmap pm_1 = QPixmap(FieldType2QString(this->getFieldType1()));
     painter->drawPixmap(this->getXP1(),this->getYP1(),this->getWidth(),this->getHeight(),pm_1);
     if(this->getCrowns1()>0){
@@ -212,3 +324,5 @@ void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
 
     //painter->drawRect(this->boundingRect());
 }
+
+

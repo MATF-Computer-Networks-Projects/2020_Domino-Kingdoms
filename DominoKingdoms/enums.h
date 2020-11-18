@@ -16,4 +16,12 @@ enum class FieldType{
     Swamp
 };
 
+enum class DominoPosition{
+    V12,
+    H21,
+    V21,
+    H12,
+    error
+};
+
 #endif // ENUMS_H
