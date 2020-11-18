@@ -27,13 +27,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     domino.cpp \
-    player.cpp
+    player.cpp \
+    castle_domino.cpp
 
 HEADERS += \
         mainwindow.h \
     player.hpp \
     domino.hpp \
-    enums.h
+    enums.h \
+    castle_domino.hpp
 
 FORMS += \
         mainwindow.ui
