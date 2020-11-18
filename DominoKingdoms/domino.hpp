@@ -43,11 +43,16 @@ public: //methods
     int getHeight() const;
     FieldType getFieldType1() const;
     FieldType getFieldType2() const;
+    Board_Status getBoardStatus() const;
 
     void setCurrentlyCompatible(bool);
     void setBoardStatus(Board_Status);
     void setWidth(int);
     void setHeight(int);
+    void setXP1(int);
+    void setYP1(int);
+    void setXP2(int);
+    void setYP2(int);
 };
 
 #endif // DOMINO_HPP
