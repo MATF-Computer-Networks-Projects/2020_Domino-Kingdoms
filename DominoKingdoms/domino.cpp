@@ -239,13 +239,13 @@ DominoPosition Domino::position2DominoPosition(int x1, int y1, int x2, int y2, i
     y2 /= h;
 
     if(y1 == y2+1 && x1 == x2)
-        return DominoPosition::V12;
-    else if(y2 == y1+1 && x1 == x2)
         return DominoPosition::V21;
+    else if(y2 == y1+1 && x1 == x2)
+        return DominoPosition::V12;
     else if(x2 == x1+1 && y1 == y2)
-        return DominoPosition::H21;
-    else if(x1 == x2+1 && y1 == y2)
         return DominoPosition::H12;
+    else if(x1 == x2+1 && y1 == y2)
+        return DominoPosition::H21;
     else
         return DominoPosition::error;
 }
@@ -270,34 +270,31 @@ QRectF Domino::boundingRect() const {
     QPointF pointTopLeft = QPointF();
     QPointF pointBottomRight = QPointF();
 
-    pointTopLeft = QPointF(this->getXP1(),this->getYP1());
-    pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
+    DominoPosition dp = this->position2DominoPosition(this->getXP1(),this->getYP1(),
+                                                      this->getXP2(),this->getYP2(),
+                                                      this->getWidth(),this->getHeight());
+    switch (dp) {
+    case DominoPosition::H12:
+        pointTopLeft = QPointF(this->getXP1(),this->getYP1());
+        pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
+        break;
+    case DominoPosition::H21:
+        pointTopLeft = QPointF(this->getXP2(),this->getYP2());
+        pointBottomRight = QPointF(this->getXP1()+this->getWidth(),this->getYP1()+this->getHeight());
+        break;
+    case DominoPosition::V12:
+        pointTopLeft = QPointF(this->getXP1(),this->getYP1());
+        pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
+        break;
 
-//    DominoPosition dp = this->position2DominoPosition(this->getXP1(),this->getYP1(),
-//                                                      this->getXP2(),this->getYP2(),
-//                                                      this->getWidth(),this->getHeight());
-//    switch (dp) {
-//    case DominoPosition::H12:
-//        pointTopLeft = QPointF(this->getXP1(),this->getYP1());
-//        pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
-//        break;
-//    case DominoPosition::H21:
-//        pointTopLeft = QPointF(this->getXP2(),this->getYP2());
-//        pointBottomRight = QPointF(this->getXP1()+this->getWidth(),this->getYP1()+this->getHeight());
-//        break;
-//    case DominoPosition::V12:
-//        pointTopLeft = QPointF(this->getXP1(),this->getYP1());
-//        pointBottomRight = QPointF(this->getXP2()+this->getWidth(),this->getYP2()+this->getHeight());
-//        break;
+    case DominoPosition::V21:
+        pointTopLeft = QPointF(this->getXP2(),this->getYP2());
+        pointBottomRight = QPointF(this->getXP1()+this->getWidth(),this->getYP1()+this->getHeight());
+        break;
 
-//    case DominoPosition::V21:
-//        pointTopLeft = QPointF(this->getXP2(),this->getYP2());
-//        pointBottomRight = QPointF(this->getXP1()+this->getWidth(),this->getYP1()+this->getHeight());
-//        break;
-
-//    default:
-//        break;
-//    }
+    default:
+        break;
+    }
 
     return QRectF(pointTopLeft,pointBottomRight);
 }
@@ -320,9 +317,6 @@ void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
         QPixmap pm_12 = QPixmap(Crowns2QString(this->getCrowns2()));
         painter->drawPixmap(this->getXP2(),this->getYP2(),this->getWidth(),this->getHeight(),pm_12);
     }
-
-
-    //painter->drawRect(this->boundingRect());
 }
 
 
