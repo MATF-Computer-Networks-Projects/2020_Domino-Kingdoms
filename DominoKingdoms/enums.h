@@ -8,6 +8,7 @@ enum class Board_Status{
 };
 
 enum class FieldType{
+    Castle,
     Forest,
     Water,
     Quarry,

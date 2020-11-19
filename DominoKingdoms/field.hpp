@@ -8,12 +8,16 @@ class Field
 
 private: // variables
 
-   FieldType fType;
-   int crownsNumber;
+   FieldType m_fType;
+   int m_crownsNumber;
 
 public: // methods
-    Field(FieldType ft, int cn);
 
+    Field(FieldType ft, int cn);
+    FieldType get_fType();
+    int get_crownsNumber();
+    void set_fType(FieldType ft);
+    void set_crownsNumber(int cn);
 };
 
 #endif // FIELD_H
