@@ -24,4 +24,10 @@ enum class DominoPosition{
     error
 };
 
+enum class NextTaskDomino{
+    ChooseDomino,
+    PlaceDomino,
+    ReserveDomino
+};
+
 #endif // ENUMS_H

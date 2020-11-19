@@ -54,10 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
     Domino *d3 = new Domino(200,200,200,300,100,100,0,0,2,1,false,
                             Board_Status::InDeck,FieldType::Water,FieldType::Water);
 
-    CastleDomino *castle = new CastleDomino(4);
+    CastleDomino *castle = new CastleDomino(2);
 
     qgs->addItem(d1);
-    qgs->addItem(d2);
     qgs->addItem(d3);
     qgs->addItem(castle);
 
