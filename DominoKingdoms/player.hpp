@@ -1,7 +1,11 @@
 #include "domino.hpp"
+#include "field.hpp"
+#include <vector>
 
 #ifndef PLAYER_H
 #define PLAYER_H
+
+#define tableFields 19
 
 #include <string>
 
@@ -12,7 +16,7 @@ private: //variables
     std::string m_name;
     int m_id;
     NextTaskDomino nextTask;
-    int table [19][19];
+    std::vector<std::vector<Field>> playerTable;
 
 public: //methods
 

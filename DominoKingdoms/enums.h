@@ -13,7 +13,8 @@ enum class FieldType{
     Quarry,
     Wheat,
     Meadow,
-    Swamp
+    Swamp,
+    Empty
 };
 
 enum class DominoPosition{
