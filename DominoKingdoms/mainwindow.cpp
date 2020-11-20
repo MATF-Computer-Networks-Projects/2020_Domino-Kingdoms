@@ -14,11 +14,17 @@
 #include <QPen>
 #include <QBrush>
 #include <Qt>
-#include<QPainter>
+#include <QPainter>
 #include "domino.hpp"
 #include "castle_domino.hpp"
 
 int backIndex = 0;
+
+QPushButton* initializeButton(QString text){
+    QPushButton *button = new QPushButton(text);
+    button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    return button;
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,89 +32,69 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
-    QGridLayout *qgl = new QGridLayout();
-    QPushButton *bt1 = new QPushButton("p1Button");
-    QPushButton *bt2 = new QPushButton("p2Button");
-    QPushButton *bt3 = new QPushButton("p3Button");
-    QPushButton *bt4 = new QPushButton("Domino1");
-    QPushButton *bt5 = new QPushButton("Domino2");
-    QPushButton *bt6 = new QPushButton("Domino3");
-    QPushButton *bt7 = new QPushButton("Domino4");
-    QPushButton *bt8 = new QPushButton("Domino5");
-    QPushButton *bt9 = new QPushButton("Domino6");
-    QPushButton *bt10 = new QPushButton("Domino7");
-    QPushButton *bt11 = new QPushButton("Domino8");
-    QPushButton *bt12 = new QPushButton("Deck");
-    QPushButton *bt13 = new QPushButton("Options");
-    QPushButton *bt14 = new QPushButton("Quit");
+
+    /* Initializing buttons */
+    QGridLayout *mainScreenLayout = new QGridLayout();
+    QPushButton *player1button = initializeButton("p1Button");
+    QPushButton *player2button = initializeButton("p2Button");
+    QPushButton *player3button = initializeButton("p3Button");
+    QPushButton *deckButton = initializeButton("Deck");
+    QPushButton *optionsButton = initializeButton("Options");
+    QPushButton *quitButton = initializeButton("Quit");
+
+    /* Initializing score label */
     QLabel *scores = new QLabel(ui->mainScreen);
     scores->setText("SCORES");
     scores->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    QGraphicsView *qgv = new QGraphicsView(ui->mainScreen);
-    QGraphicsScene *qgs = new QGraphicsScene(ui->mainScreen);
 
-/***********************************************************************/
+    /* Initializing views and scenes */
+    QGraphicsView *tableView = new QGraphicsView(ui->mainScreen);
+    QGraphicsView *dominoView = new QGraphicsView(ui->mainScreen);
+    QGraphicsScene *tableScene = new QGraphicsScene(ui->mainScreen);
+    QGraphicsScene *dominoScene = new QGraphicsScene(ui->mainScreen);
 
-    Domino *d1 = new Domino(500,500,500,600,100,100,2,3,1,0,
-                      false,Board_Status::OnBoard,FieldType::Forest,FieldType::Swamp);
-    Domino *d3 = new Domino(200,200,200,300,100,100,0,0,2,1,false,
-                            Board_Status::InDeck,FieldType::Water,FieldType::Water);
+    /* Setting up scenes */
+    //Domino *d1 = new Domino(1000,1000,1000,1200,200,200,2,3,1,0,
+      //                false,Board_Status::OnBoard,FieldType::Forest,FieldType::Swamp);
+    //Domino *d3 = new Domino(200,200,200,300,100,100,0,0,2,1,false,
+                           // Board_Status::InDeck,FieldType::Water,FieldType::Water);
+    //tableScene->addItem(d1);
+    //tableScene->addItem(d3);
 
     CastleDomino *castle = new CastleDomino(2);
+    tableScene->addItem(castle);
 
-    qgs->addItem(d1);
-    qgs->addItem(d3);
-    qgs->addItem(castle);
+    for(int i = 0; i < 5; i++)
+        for(int j = 0; j < 5; j++)
+            tableScene->addRect(200*i, 200*j, 200, 200);
 
-
-/************************************************************************/
-
-    for(int i = 0; i<19; i++){
-        for(int j = 0; j<19; j++){
-            QGraphicsItem *rectangle1 = qgs->addRect(100*i, 100*j, 100, 100);
-        }
+    for(int i = 0; i < 4; i++){
+        dominoScene->addRect(0, 200*i, 100, 100);
+        dominoScene->addRect(100, 200*i, 100, 100);
+        dominoScene->addRect(300, 200*i, 100, 100);
+        dominoScene->addRect(400, 200*i, 100, 100);
     }
-    qgv->setScene(qgs);
-    //qgv->fitInView(qgs->sceneRect(), Qt::KeepAspectRatioByExpanding);
 
-    bt1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt3->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt4->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt5->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt6->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt7->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt8->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt9->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt10->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt11->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt12->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt13->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt14->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    scores->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    /* Setting scenes to views */
+    tableView->setScene(tableScene);
+    dominoView->setScene(dominoScene);
 
-    qgl->addWidget(bt1, 11, 0, 2, 1);
-    qgl->addWidget(bt2, 11, 1, 2, 1);
-    qgl->addWidget(bt3, 11, 2, 2, 1);
-    qgl->addWidget(bt4, 0, 6, 1, 2);
-    qgl->addWidget(bt5, 2, 6, 1, 2);
-    qgl->addWidget(bt6, 4, 6, 1, 2);
-    qgl->addWidget(bt7, 6, 6, 1, 2);
-    qgl->addWidget(bt8, 0, 8, 1, 2);
-    qgl->addWidget(bt9, 2, 8, 1, 2);
-    qgl->addWidget(bt10, 4, 8, 1, 2);
-    qgl->addWidget(bt11, 6, 8, 1, 2);
-    qgl->addWidget(bt12, 0, 10, 1, 2);
-    qgl->addWidget(bt13, 11, 10, 1, 2);
-    qgl->addWidget(bt14, 12, 10, 1, 2);
-    qgl->addWidget(scores, 2, 10, 4, 2);
+    /* Setting up layout */
+    mainScreenLayout->addWidget(player1button, 11, 0, 2, 1);
+    mainScreenLayout->addWidget(player2button, 11, 1, 2, 1);
+    mainScreenLayout->addWidget(player3button, 11, 2, 2, 1);
+    mainScreenLayout->addWidget(deckButton, 0, 9, 1, 1);
+    mainScreenLayout->addWidget(optionsButton, 11, 9, 1, 1);
+    mainScreenLayout->addWidget(quitButton, 12, 9, 1, 1);
+    mainScreenLayout->addWidget(scores, 2, 9, 4, 1);
+    mainScreenLayout->addWidget(tableView, 0, 0, 10, 5);
+    mainScreenLayout->addWidget(dominoView, 0, 6, 10, 3);
 
-    qgl->addWidget(qgv, 0, 0, 10, 6);
+    ui->mainScreen->setLayout(mainScreenLayout);
 
-    ui->mainScreen->setLayout(qgl);
-
-    connect(bt13, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
-    connect(bt14, &QPushButton::clicked, this, &MainWindow::back_to_menu);
+    /* Connecting buttons */
+    connect(player1button, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
+    connect(quitButton, &QPushButton::clicked, this, &MainWindow::back_to_menu);
     connect(ui->newGameButton, &QPushButton::clicked, this, &MainWindow::newGameButton_clicked);
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButton_clicked);
