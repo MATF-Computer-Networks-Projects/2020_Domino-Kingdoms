@@ -82,12 +82,12 @@ Domino::Domino(int xPos1, int yPos1, int xPos2,int yPos2,
     }
 }
 
-Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldType2, int value):
+Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldType2, int value, Board_Status boardStatus):
       m_xPos1(0), m_yPos1(0), m_xPos2(0), m_yPos2(0),
       m_width(100), m_height(100),
       m_value(value), m_crowns1(crowns1), m_crowns2(crowns2),
       m_reservedBy(-1), m_currentlyCompatible(false),
-      m_boardStatus(Board_Status::InDeck), m_fieldType1(fieldType1), m_fieldType2(fieldType2)
+      m_boardStatus(boardStatus), m_fieldType1(fieldType1), m_fieldType2(fieldType2)
 {
 
 }
@@ -321,4 +321,7 @@ void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
     }
 }
 
-
+void Domino::changeSize(int size){
+    this->setWidth(size);
+    this->setHeight(size);
+}

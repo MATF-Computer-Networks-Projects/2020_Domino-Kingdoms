@@ -23,7 +23,7 @@ public: //methods
            int reservedBy,bool currentlyCompatible, Board_Status boardStatus,
            FieldType ft1, FieldType ft2);
 
-    Domino(int crowns1, int crowns2,FieldType fieldType1, FieldType fieldType2, int value);
+    Domino(int crowns1, int crowns2,FieldType fieldType1, FieldType fieldType2, int value, Board_Status boardStatus);
 
     void rotate();
     bool compatibleWith(Domino d);
@@ -56,6 +56,7 @@ public: //methods
     void setYP2(int);
     void setPressed();
     void unsetPressed();
+    void changeSize(int);
 
     DominoPosition position2DominoPosition(int x1,int y1,int x2,int y2,int w,int h) const;
 

@@ -15,8 +15,11 @@
 #include <QBrush>
 #include <Qt>
 #include <QPainter>
+#include <dominofield.h>
 #include "domino.hpp"
 #include "castle_domino.hpp"
+#include <iterator>
+#include <set>
 
 int backIndex = 0;
 
@@ -53,11 +56,74 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *tableScene = new QGraphicsScene(ui->mainScreen);
     QGraphicsScene *dominoScene = new QGraphicsScene(ui->mainScreen);
 
-    /* Initializing Dominos */
+    /* Initializing Dominoes */
+    Domino* dominoes[48];
+    dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
+    dominoes[1] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 2, Board_Status::InDeck);
+    dominoes[2] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 3, Board_Status::InDeck);
+    dominoes[3] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 4, Board_Status::InDeck);
+    dominoes[4] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 5, Board_Status::InDeck);
+    dominoes[5] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 6, Board_Status::InDeck);
+    dominoes[6] = new Domino(0, 0, FieldType::Water, FieldType::Water, 7, Board_Status::InDeck);
+    dominoes[7] = new Domino(0, 0, FieldType::Water, FieldType::Water, 8, Board_Status::InDeck);
+    dominoes[8] = new Domino(0, 0, FieldType::Water, FieldType::Water, 9, Board_Status::InDeck);
+    dominoes[9] = new Domino(0, 0, FieldType::Meadow, FieldType::Meadow, 10, Board_Status::InDeck);
+    dominoes[10] = new Domino(0, 0, FieldType::Meadow, FieldType::Meadow, 11, Board_Status::InDeck);
+    dominoes[11] = new Domino(0, 0, FieldType::Swamp, FieldType::Swamp, 12, Board_Status::InDeck);
+    dominoes[12] = new Domino(0, 0, FieldType::Wheat, FieldType::Forest, 13, Board_Status::InDeck);
+    dominoes[13] = new Domino(0, 0, FieldType::Wheat, FieldType::Water, 14, Board_Status::InDeck);
+    dominoes[14] = new Domino(0, 0, FieldType::Wheat, FieldType::Meadow, 15, Board_Status::InDeck);
+    dominoes[15] = new Domino(0, 0, FieldType::Wheat, FieldType::Swamp, 16, Board_Status::InDeck);
+    dominoes[16] = new Domino(0, 0, FieldType::Forest, FieldType::Water, 17, Board_Status::InDeck);
+    dominoes[17] = new Domino(0, 0, FieldType::Forest, FieldType::Meadow, 18, Board_Status::InDeck);
+    dominoes[18] = new Domino(1, 0, FieldType::Wheat, FieldType::Forest, 19, Board_Status::InDeck);
+    dominoes[19] = new Domino(1, 0, FieldType::Wheat, FieldType::Water, 20, Board_Status::InDeck);
+    dominoes[20] = new Domino(1, 0, FieldType::Wheat, FieldType::Meadow, 21, Board_Status::InDeck);
+    dominoes[21] = new Domino(1, 0, FieldType::Wheat, FieldType::Swamp, 22, Board_Status::InDeck);
+    dominoes[22] = new Domino(1, 0, FieldType::Wheat, FieldType::Quarry, 23, Board_Status::InDeck);
+    dominoes[23] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 24, Board_Status::InDeck);
+    dominoes[24] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 25, Board_Status::InDeck);
+    dominoes[25] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 26, Board_Status::InDeck);
+    dominoes[26] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 27, Board_Status::InDeck);
+    dominoes[27] = new Domino(1, 0, FieldType::Forest, FieldType::Water, 28, Board_Status::InDeck);
+    dominoes[28] = new Domino(1, 0, FieldType::Forest, FieldType::Meadow, 29, Board_Status::InDeck);
+    dominoes[29] = new Domino(1, 0, FieldType::Water, FieldType::Wheat, 30, Board_Status::InDeck);
+    dominoes[30] = new Domino(1, 0, FieldType::Water, FieldType::Wheat, 31, Board_Status::InDeck);
+    dominoes[31] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 32, Board_Status::InDeck);
+    dominoes[32] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 33, Board_Status::InDeck);
+    dominoes[33] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 34, Board_Status::InDeck);
+    dominoes[34] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 35, Board_Status::InDeck);
+    dominoes[35] = new Domino(0, 1, FieldType::Wheat, FieldType::Meadow, 36, Board_Status::InDeck);
+    dominoes[36] = new Domino(0, 1, FieldType::Water, FieldType::Meadow, 37, Board_Status::InDeck);
+    dominoes[37] = new Domino(0, 1, FieldType::Wheat, FieldType::Swamp, 38, Board_Status::InDeck);
+    dominoes[38] = new Domino(0, 1, FieldType::Meadow, FieldType::Swamp, 39, Board_Status::InDeck);
+    dominoes[39] = new Domino(1, 0, FieldType::Quarry, FieldType::Wheat, 40, Board_Status::InDeck);
+    dominoes[40] = new Domino(0, 2, FieldType::Wheat, FieldType::Meadow, 41, Board_Status::InDeck);
+    dominoes[41] = new Domino(0, 2, FieldType::Water, FieldType::Meadow, 42, Board_Status::InDeck);
+    dominoes[42] = new Domino(0, 2, FieldType::Wheat, FieldType::Swamp, 43, Board_Status::InDeck);
+    dominoes[43] = new Domino(0, 2, FieldType::Meadow, FieldType::Swamp, 44, Board_Status::InDeck);
+    dominoes[44] = new Domino(2, 0, FieldType::Quarry, FieldType::Wheat, 45, Board_Status::InDeck);
+    dominoes[45] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 46, Board_Status::InDeck);
+    dominoes[46] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 47, Board_Status::InDeck);
+    dominoes[47] = new Domino(0, 3, FieldType::Wheat, FieldType::Quarry, 48, Board_Status::InDeck);
+
+    std::set<Domino*> deckSet;
+    for(int i = 0; i < 48; i++)
+        deckSet.insert(dominoes[i]);
+
+    /* Initializing domino fields */
+    DominoField* firstRowDF[4];
+    DominoField* secondRowDF[4];
+    for(int i = 0; i < 4; i++)
+        firstRowDF[i] = new DominoField();
+    for(int i = 0; i < 4; i++)
+        secondRowDF[i] = new DominoField();
+
+    //tableScene->addItem(d3);
+    //dominoScene->addItem(d3);
 
     /* Setting up scenes */
-    Domino *d3 = new Domino(200,200,400,200,200,200,0,0,2,1,false,Board_Status::InDeck,FieldType::Water,FieldType::Water);
-    tableScene->addItem(d3);
+
 
     CastleDomino *castle = new CastleDomino(2);
     tableScene->addItem(castle);
@@ -103,6 +169,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->backOptionsButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backRulesButton, &QPushButton::clicked, this, &MainWindow::back_rules_clicked);
     connect(ui->pbBackNewGame, &QPushButton::clicked, this, &MainWindow::back_clicked);
+    connect(deckButton, &QPushButton::clicked, this, &MainWindow::take_cards_from_deck);
 }
 
 MainWindow::~MainWindow()
@@ -148,4 +215,8 @@ void MainWindow::back_to_game(){
 
 void MainWindow::back_to_menu(){
     ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::take_cards_from_deck(){
+    //TODO
 }
