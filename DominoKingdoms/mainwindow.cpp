@@ -53,13 +53,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *tableScene = new QGraphicsScene(ui->mainScreen);
     QGraphicsScene *dominoScene = new QGraphicsScene(ui->mainScreen);
 
+    /* Initializing Dominos */
+
     /* Setting up scenes */
-    //Domino *d1 = new Domino(1000,1000,1000,1200,200,200,2,3,1,0,
-      //                false,Board_Status::OnBoard,FieldType::Forest,FieldType::Swamp);
-    //Domino *d3 = new Domino(200,200,200,300,100,100,0,0,2,1,false,
-                           // Board_Status::InDeck,FieldType::Water,FieldType::Water);
-    //tableScene->addItem(d1);
-    //tableScene->addItem(d3);
+    Domino *d3 = new Domino(200,200,400,200,200,200,0,0,2,1,false,Board_Status::InDeck,FieldType::Water,FieldType::Water);
+    tableScene->addItem(d3);
 
     CastleDomino *castle = new CastleDomino(2);
     tableScene->addItem(castle);
