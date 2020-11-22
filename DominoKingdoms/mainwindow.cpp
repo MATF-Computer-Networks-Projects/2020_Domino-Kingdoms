@@ -14,11 +14,20 @@
 #include <QPen>
 #include <QBrush>
 #include <Qt>
-#include<QPainter>
+#include <QPainter>
+#include <dominofield.h>
 #include "domino.hpp"
 #include "castle_domino.hpp"
+#include <iterator>
+#include <set>
 
 int backIndex = 0;
+
+QPushButton* initializeButton(QString text){
+    QPushButton *button = new QPushButton(text);
+    button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    return button;
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,89 +35,129 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
-    QGridLayout *qgl = new QGridLayout();
-    QPushButton *bt1 = new QPushButton("p1Button");
-    QPushButton *bt2 = new QPushButton("p2Button");
-    QPushButton *bt3 = new QPushButton("p3Button");
-    QPushButton *bt4 = new QPushButton("Domino1");
-    QPushButton *bt5 = new QPushButton("Domino2");
-    QPushButton *bt6 = new QPushButton("Domino3");
-    QPushButton *bt7 = new QPushButton("Domino4");
-    QPushButton *bt8 = new QPushButton("Domino5");
-    QPushButton *bt9 = new QPushButton("Domino6");
-    QPushButton *bt10 = new QPushButton("Domino7");
-    QPushButton *bt11 = new QPushButton("Domino8");
-    QPushButton *bt12 = new QPushButton("Deck");
-    QPushButton *bt13 = new QPushButton("Options");
-    QPushButton *bt14 = new QPushButton("Quit");
+
+    /* Initializing buttons */
+    QGridLayout *mainScreenLayout = new QGridLayout();
+    QPushButton *player1button = initializeButton("p1Button");
+    QPushButton *player2button = initializeButton("p2Button");
+    QPushButton *player3button = initializeButton("p3Button");
+    QPushButton *deckButton = initializeButton("Deck");
+    QPushButton *optionsButton = initializeButton("Options");
+    QPushButton *quitButton = initializeButton("Quit");
+
+    /* Initializing score label */
     QLabel *scores = new QLabel(ui->mainScreen);
     scores->setText("SCORES");
     scores->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    QGraphicsView *qgv = new QGraphicsView(ui->mainScreen);
-    QGraphicsScene *qgs = new QGraphicsScene(ui->mainScreen);
 
-/***********************************************************************/
+    /* Initializing views and scenes */
+    QGraphicsView *tableView = new QGraphicsView(ui->mainScreen);
+    QGraphicsView *dominoView = new QGraphicsView(ui->mainScreen);
+    QGraphicsScene *tableScene = new QGraphicsScene(ui->mainScreen);
+    QGraphicsScene *dominoScene = new QGraphicsScene(ui->mainScreen);
 
-    Domino *d1 = new Domino(500,500,500,600,100,100,2,3,1,0,
-                      false,Board_Status::OnBoard,FieldType::Forest,FieldType::Swamp);
-    Domino *d3 = new Domino(800,800,700,800,100,100,0,0,2,1,false,
-                            Board_Status::InDeck,FieldType::Water,FieldType::Water);
+    /* Initializing Dominoes */
+    Domino* dominoes[48];
+    dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
+    dominoes[1] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 2, Board_Status::InDeck);
+    dominoes[2] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 3, Board_Status::InDeck);
+    dominoes[3] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 4, Board_Status::InDeck);
+    dominoes[4] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 5, Board_Status::InDeck);
+    dominoes[5] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 6, Board_Status::InDeck);
+    dominoes[6] = new Domino(0, 0, FieldType::Water, FieldType::Water, 7, Board_Status::InDeck);
+    dominoes[7] = new Domino(0, 0, FieldType::Water, FieldType::Water, 8, Board_Status::InDeck);
+    dominoes[8] = new Domino(0, 0, FieldType::Water, FieldType::Water, 9, Board_Status::InDeck);
+    dominoes[9] = new Domino(0, 0, FieldType::Meadow, FieldType::Meadow, 10, Board_Status::InDeck);
+    dominoes[10] = new Domino(0, 0, FieldType::Meadow, FieldType::Meadow, 11, Board_Status::InDeck);
+    dominoes[11] = new Domino(0, 0, FieldType::Swamp, FieldType::Swamp, 12, Board_Status::InDeck);
+    dominoes[12] = new Domino(0, 0, FieldType::Wheat, FieldType::Forest, 13, Board_Status::InDeck);
+    dominoes[13] = new Domino(0, 0, FieldType::Wheat, FieldType::Water, 14, Board_Status::InDeck);
+    dominoes[14] = new Domino(0, 0, FieldType::Wheat, FieldType::Meadow, 15, Board_Status::InDeck);
+    dominoes[15] = new Domino(0, 0, FieldType::Wheat, FieldType::Swamp, 16, Board_Status::InDeck);
+    dominoes[16] = new Domino(0, 0, FieldType::Forest, FieldType::Water, 17, Board_Status::InDeck);
+    dominoes[17] = new Domino(0, 0, FieldType::Forest, FieldType::Meadow, 18, Board_Status::InDeck);
+    dominoes[18] = new Domino(1, 0, FieldType::Wheat, FieldType::Forest, 19, Board_Status::InDeck);
+    dominoes[19] = new Domino(1, 0, FieldType::Wheat, FieldType::Water, 20, Board_Status::InDeck);
+    dominoes[20] = new Domino(1, 0, FieldType::Wheat, FieldType::Meadow, 21, Board_Status::InDeck);
+    dominoes[21] = new Domino(1, 0, FieldType::Wheat, FieldType::Swamp, 22, Board_Status::InDeck);
+    dominoes[22] = new Domino(1, 0, FieldType::Wheat, FieldType::Quarry, 23, Board_Status::InDeck);
+    dominoes[23] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 24, Board_Status::InDeck);
+    dominoes[24] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 25, Board_Status::InDeck);
+    dominoes[25] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 26, Board_Status::InDeck);
+    dominoes[26] = new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 27, Board_Status::InDeck);
+    dominoes[27] = new Domino(1, 0, FieldType::Forest, FieldType::Water, 28, Board_Status::InDeck);
+    dominoes[28] = new Domino(1, 0, FieldType::Forest, FieldType::Meadow, 29, Board_Status::InDeck);
+    dominoes[29] = new Domino(1, 0, FieldType::Water, FieldType::Wheat, 30, Board_Status::InDeck);
+    dominoes[30] = new Domino(1, 0, FieldType::Water, FieldType::Wheat, 31, Board_Status::InDeck);
+    dominoes[31] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 32, Board_Status::InDeck);
+    dominoes[32] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 33, Board_Status::InDeck);
+    dominoes[33] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 34, Board_Status::InDeck);
+    dominoes[34] = new Domino(1, 0, FieldType::Water, FieldType::Forest, 35, Board_Status::InDeck);
+    dominoes[35] = new Domino(0, 1, FieldType::Wheat, FieldType::Meadow, 36, Board_Status::InDeck);
+    dominoes[36] = new Domino(0, 1, FieldType::Water, FieldType::Meadow, 37, Board_Status::InDeck);
+    dominoes[37] = new Domino(0, 1, FieldType::Wheat, FieldType::Swamp, 38, Board_Status::InDeck);
+    dominoes[38] = new Domino(0, 1, FieldType::Meadow, FieldType::Swamp, 39, Board_Status::InDeck);
+    dominoes[39] = new Domino(1, 0, FieldType::Quarry, FieldType::Wheat, 40, Board_Status::InDeck);
+    dominoes[40] = new Domino(0, 2, FieldType::Wheat, FieldType::Meadow, 41, Board_Status::InDeck);
+    dominoes[41] = new Domino(0, 2, FieldType::Water, FieldType::Meadow, 42, Board_Status::InDeck);
+    dominoes[42] = new Domino(0, 2, FieldType::Wheat, FieldType::Swamp, 43, Board_Status::InDeck);
+    dominoes[43] = new Domino(0, 2, FieldType::Meadow, FieldType::Swamp, 44, Board_Status::InDeck);
+    dominoes[44] = new Domino(2, 0, FieldType::Quarry, FieldType::Wheat, 45, Board_Status::InDeck);
+    dominoes[45] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 46, Board_Status::InDeck);
+    dominoes[46] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 47, Board_Status::InDeck);
+    dominoes[47] = new Domino(0, 3, FieldType::Wheat, FieldType::Quarry, 48, Board_Status::InDeck);
 
-    CastleDomino *castle = new CastleDomino(1);
+    std::set<Domino*> deckSet;
+    for(int i = 0; i < 48; i++)
+        deckSet.insert(dominoes[i]);
 
-    qgs->addItem(d1);
-    qgs->addItem(d3);
-    qgs->addItem(castle);
+    /* Initializing domino fields */
+    DominoField* firstRowDF[4];
+    DominoField* secondRowDF[4];
+    for(int i = 0; i < 4; i++)
+        firstRowDF[i] = new DominoField();
+    for(int i = 0; i < 4; i++)
+        secondRowDF[i] = new DominoField();
+
+    //tableScene->addItem(d3);
+    //dominoScene->addItem(d3);
+
+    /* Setting up scenes */
+    CastleDomino *castle = new CastleDomino(2);
+    tableScene->addItem(castle);
 
 
-/************************************************************************/
+    for(int i = 0; i < 5; i++)
+        for(int j = 0; j < 5; j++)
+            tableScene->addRect(200*i, 200*j, 200, 200);
 
-    for(int i = 0; i<19; i++){
-        for(int j = 0; j<19; j++){
-            QGraphicsItem *rectangle1 = qgs->addRect(100*i, 100*j, 100, 100);
-        }
+    for(int i = 0; i < 4; i++){
+        dominoScene->addRect(0, 200*i, 100, 100);
+        dominoScene->addRect(100, 200*i, 100, 100);
+        dominoScene->addRect(300, 200*i, 100, 100);
+        dominoScene->addRect(400, 200*i, 100, 100);
     }
-    qgv->setScene(qgs);
-    //qgv->fitInView(qgs->sceneRect(), Qt::KeepAspectRatioByExpanding);
 
-    bt1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt2->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt3->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt4->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt5->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt6->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt7->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt8->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt9->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt10->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt11->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt12->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt13->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    bt14->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    scores->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    /* Setting scenes to views */
+    tableView->setScene(tableScene);
+    dominoView->setScene(dominoScene);
 
-    qgl->addWidget(bt1, 11, 0, 2, 1);
-    qgl->addWidget(bt2, 11, 1, 2, 1);
-    qgl->addWidget(bt3, 11, 2, 2, 1);
-    qgl->addWidget(bt4, 0, 6, 1, 2);
-    qgl->addWidget(bt5, 2, 6, 1, 2);
-    qgl->addWidget(bt6, 4, 6, 1, 2);
-    qgl->addWidget(bt7, 6, 6, 1, 2);
-    qgl->addWidget(bt8, 0, 8, 1, 2);
-    qgl->addWidget(bt9, 2, 8, 1, 2);
-    qgl->addWidget(bt10, 4, 8, 1, 2);
-    qgl->addWidget(bt11, 6, 8, 1, 2);
-    qgl->addWidget(bt12, 0, 10, 1, 2);
-    qgl->addWidget(bt13, 11, 10, 1, 2);
-    qgl->addWidget(bt14, 12, 10, 1, 2);
-    qgl->addWidget(scores, 2, 10, 4, 2);
+    /* Setting up layout */
+    mainScreenLayout->addWidget(player1button, 11, 0, 2, 1);
+    mainScreenLayout->addWidget(player2button, 11, 1, 2, 1);
+    mainScreenLayout->addWidget(player3button, 11, 2, 2, 1);
+    mainScreenLayout->addWidget(deckButton, 0, 9, 1, 1);
+    mainScreenLayout->addWidget(optionsButton, 11, 9, 1, 1);
+    mainScreenLayout->addWidget(quitButton, 12, 9, 1, 1);
+    mainScreenLayout->addWidget(scores, 2, 9, 4, 1);
+    mainScreenLayout->addWidget(tableView, 0, 0, 10, 5);
+    mainScreenLayout->addWidget(dominoView, 0, 6, 10, 3);
 
-    qgl->addWidget(qgv, 0, 0, 10, 6);
+    ui->mainScreen->setLayout(mainScreenLayout);
 
-    ui->mainScreen->setLayout(qgl);
-
-    connect(bt13, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
-    connect(bt14, &QPushButton::clicked, this, &MainWindow::back_to_menu);
+    /* Connecting buttons */
+    connect(player1button, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
+    connect(quitButton, &QPushButton::clicked, this, &MainWindow::back_to_menu);
     connect(ui->newGameButton, &QPushButton::clicked, this, &MainWindow::newGameButton_clicked);
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(ui->exitButton, &QPushButton::clicked, this, &MainWindow::exitButton_clicked);
@@ -119,6 +168,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->backOptionsButton, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(ui->backRulesButton, &QPushButton::clicked, this, &MainWindow::back_rules_clicked);
     connect(ui->pbBackNewGame, &QPushButton::clicked, this, &MainWindow::back_clicked);
+    connect(deckButton, &QPushButton::clicked, this, &MainWindow::take_cards_from_deck);
 }
 
 MainWindow::~MainWindow()
@@ -164,4 +214,8 @@ void MainWindow::back_to_game(){
 
 void MainWindow::back_to_menu(){
     ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::take_cards_from_deck(){
+    //TODO
 }
