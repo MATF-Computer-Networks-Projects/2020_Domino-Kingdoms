@@ -232,13 +232,13 @@ void MainWindow::take_cards_from_deck(){
     if(firstRowDF[0]->getIsEmpty() && firstRowDF[1]->getIsEmpty() && firstRowDF[2]->getIsEmpty() && firstRowDF[3]->getIsEmpty()){
         for(int i = 0; i < 4; i++){
             auto it = deckSet.begin();
-            deckSet.erase(it);
             firstRowDF[i]->setDomino(*it);
+            deckSet.erase(it);
         }
         for(int i = 0; i < 4; i++){
             auto it = deckSet.begin();
-            deckSet.erase(it);
             secondRowDF[i]->setDomino(*it);
+            deckSet.erase(it);
         }
         for(int i = 0; i < 4; i++){
             firstRowDF[i]->getDomino()->setXP1(firstRowDF[i]->getX1());
