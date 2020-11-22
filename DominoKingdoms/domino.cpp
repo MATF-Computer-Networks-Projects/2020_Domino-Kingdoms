@@ -7,6 +7,7 @@
 #include<QPointF>
 #include<QRectF>
 #include<QString>
+#include<QCursor>
 
 bool correctDominoPosition(int x1, int y1, int x2, int y2, int w, int h){
     x1 /= w;
@@ -40,7 +41,7 @@ QString FieldType2QString(FieldType ft){
     case FieldType::Meadow:
         return QString(":/Images/Images/meadow1.jpg");
     case FieldType::Quarry:
-        return QString(":/Images/Images/quarry1.jpg");
+        return QString(":/Images/Images/quarry.jpg");
     case FieldType::Water:
         return QString(":/Images/Images/sea1.jpg");
     case FieldType::Swamp:
@@ -80,6 +81,7 @@ Domino::Domino(int xPos1, int yPos1, int xPos2,int yPos2,
     if(!correctDominoPosition(m_xPos1,m_yPos1,m_xPos2,m_yPos2, m_width,m_height)){
         throw "impossible domino";
     }
+    setFlag(ItemIsMovable);
 }
 
 Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldType2, int value):
@@ -130,29 +132,23 @@ void Domino::setCurrentlyCompatible(bool cc){
 
 void Domino::rotate(){
     //if(this->getBoardStatus() == Board_Status::OnTable){}
-    this->setTransformOriginPoint(QPoint(this->getXP1()+(this->getWidth()/2),
-                                         this->getYP1()+(this->getHeight()/2)));
 
     DominoPosition dp = this->position2DominoPosition(this->getXP1(),this->getYP1(),
                                                       this->getXP2(),this->getYP2(),
                                                       this->getWidth(),this->getHeight());
     if(dp == DominoPosition::V12){
-        std::cerr<<"V12"<<std::endl;
         this->setXP2(this->getXP1()-this->getWidth());
         this->setYP2(this->getYP1());
     }
     else if(dp == DominoPosition::H21){
-        std::cerr<<"H21"<<std::endl;
         this->setXP2(this->getXP1());
         this->setYP2(this->getYP1()-this->getHeight());
     }
     else if(dp == DominoPosition::V21){
-        std::cerr<<"V21"<<std::endl;
         this->setXP2(this->getXP1()+this->getWidth());
         this->setYP2(this->getYP1());
     }
     else if(dp == DominoPosition::H12){
-        std::cerr<<"H12"<<std::endl;
         this->setXP2(this->getXP1());
         this->setYP2(this->getYP1()+this->getHeight());
     }
@@ -222,13 +218,28 @@ void Domino::setPressed()
     m_pressed = true;
 }
 
+void Domino::setHeld()
+{
+    m_held = true;
+}
+
 void Domino::unsetPressed(){
     m_pressed = false;
+}
+
+void Domino::unsetHeld()
+{
+    m_held = false;
 }
 
 bool Domino::isPressed()
 {
     return m_pressed;
+}
+
+bool Domino::isHeld()
+{
+    return m_held;
 }
 
 DominoPosition Domino::position2DominoPosition(int x1, int y1, int x2, int y2, int w, int h) const
@@ -250,12 +261,14 @@ DominoPosition Domino::position2DominoPosition(int x1, int y1, int x2, int y2, i
         return DominoPosition::error;
 }
 
+
 void Domino::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     std::cerr<<"PRESSED"<<std::endl;
     this->setPressed();
     update();
     QGraphicsItem::mousePressEvent(event);
+
 }
 
 void Domino::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
