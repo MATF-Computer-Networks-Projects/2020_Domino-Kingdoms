@@ -20,8 +20,19 @@
 #include "castle_domino.hpp"
 #include <iterator>
 #include <set>
+#include <unordered_set>
+#include <algorithm>
 
 int backIndex = 0;
+Domino* dominoes[48];
+std::unordered_set<Domino*> deckSet;
+DominoField* firstRowDF[4];
+DominoField* secondRowDF[4];
+
+QGraphicsView *tableView;
+QGraphicsView *dominoView;
+QGraphicsScene *tableScene;
+QGraphicsScene *dominoScene;
 
 QPushButton* initializeButton(QString text){
     QPushButton *button = new QPushButton(text);
@@ -35,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
+
+    srand(time(0));
 
     /* Initializing buttons */
     QGridLayout *mainScreenLayout = new QGridLayout();
@@ -51,13 +64,12 @@ MainWindow::MainWindow(QWidget *parent) :
     scores->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     /* Initializing views and scenes */
-    QGraphicsView *tableView = new QGraphicsView(ui->mainScreen);
-    QGraphicsView *dominoView = new QGraphicsView(ui->mainScreen);
-    QGraphicsScene *tableScene = new QGraphicsScene(ui->mainScreen);
-    QGraphicsScene *dominoScene = new QGraphicsScene(ui->mainScreen);
+    tableView = new QGraphicsView(ui->mainScreen);
+    dominoView = new QGraphicsView(ui->mainScreen);
+    tableScene = new QGraphicsScene(ui->mainScreen);
+    dominoScene = new QGraphicsScene(ui->mainScreen);
 
     /* Initializing Dominoes */
-    Domino* dominoes[48];
     dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
     dominoes[1] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 2, Board_Status::InDeck);
     dominoes[2] = new Domino(0, 0, FieldType::Forest, FieldType::Forest, 3, Board_Status::InDeck);
@@ -107,17 +119,16 @@ MainWindow::MainWindow(QWidget *parent) :
     dominoes[46] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 47, Board_Status::InDeck);
     dominoes[47] = new Domino(0, 3, FieldType::Wheat, FieldType::Quarry, 48, Board_Status::InDeck);
 
-    std::set<Domino*> deckSet;
+    std::random_shuffle(std::begin(dominoes), std::end(dominoes));
+
     for(int i = 0; i < 48; i++)
         deckSet.insert(dominoes[i]);
 
     /* Initializing domino fields */
-    DominoField* firstRowDF[4];
-    DominoField* secondRowDF[4];
     for(int i = 0; i < 4; i++)
-        firstRowDF[i] = new DominoField();
+        firstRowDF[i] = new DominoField(0, 200*i, 100, 200*i);
     for(int i = 0; i < 4; i++)
-        secondRowDF[i] = new DominoField();
+        secondRowDF[i] = new DominoField(300, 200*i, 400, 200*i);
 
     //tableScene->addItem(d3);
     //dominoScene->addItem(d3);
@@ -217,5 +228,33 @@ void MainWindow::back_to_menu(){
 }
 
 void MainWindow::take_cards_from_deck(){
-    //TODO
+    std::cout << "pokrenuto" << std::endl;
+    if(firstRowDF[0]->getIsEmpty() && firstRowDF[1]->getIsEmpty() && firstRowDF[2]->getIsEmpty() && firstRowDF[3]->getIsEmpty()){
+        for(int i = 0; i < 4; i++){
+            auto it = deckSet.begin();
+            deckSet.erase(it);
+            firstRowDF[i]->setDomino(*it);
+        }
+        for(int i = 0; i < 4; i++){
+            auto it = deckSet.begin();
+            deckSet.erase(it);
+            secondRowDF[i]->setDomino(*it);
+        }
+        for(int i = 0; i < 4; i++){
+            firstRowDF[i]->getDomino()->setXP1(firstRowDF[i]->getX1());
+            firstRowDF[i]->getDomino()->setYP1(firstRowDF[i]->getY1());
+            firstRowDF[i]->getDomino()->setXP2(firstRowDF[i]->getX2());
+            firstRowDF[i]->getDomino()->setYP2(firstRowDF[i]->getY2());
+            firstRowDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+            dominoScene->addItem(firstRowDF[i]->getDomino());
+            firstRowDF[i]->setIsEmpty(false);
+            secondRowDF[i]->getDomino()->setXP1(secondRowDF[i]->getX1());
+            secondRowDF[i]->getDomino()->setYP1(secondRowDF[i]->getY1());
+            secondRowDF[i]->getDomino()->setXP2(secondRowDF[i]->getX2());
+            secondRowDF[i]->getDomino()->setYP2(secondRowDF[i]->getY2());
+            secondRowDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+            dominoScene->addItem(secondRowDF[i]->getDomino());
+            secondRowDF[i]->setIsEmpty(false);
+        }
+    }
 }
