@@ -37,17 +37,17 @@ bool correctDominoPosition(int x1, int y1, int x2, int y2, int w, int h){
 QString FieldType2QString(FieldType ft){
     switch (ft) {
     case FieldType::Forest:
-        return QString(":/Images/Images/forest1.jpg");
+        return QString(":/Images/Images/3.jpg");
     case FieldType::Meadow:
-        return QString(":/Images/Images/meadow1.jpg");
+        return QString(":/Images/Images/1.jpeg");
     case FieldType::Quarry:
-        return QString(":/Images/Images/quarry.jpg");
+        return QString(":/Images/Images/2.jpg");
     case FieldType::Water:
-        return QString(":/Images/Images/sea1.jpg");
+        return QString(":/Images/Images/4.jpeg");
     case FieldType::Swamp:
-        return QString(":/Images/Images/swamp1.jpg");
+        return QString(":/Images/Images/5.jpg");
     case FieldType::Wheat:
-        return QString(":/Images/Images/wheat1.jpg");
+        return QString(":/Images/Images/6.png");
     default:
         return QString("field type not correct");
     }
@@ -264,7 +264,7 @@ DominoPosition Domino::position2DominoPosition(int x1, int y1, int x2, int y2, i
 
 void Domino::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    std::cerr<<"PRESSED"<<std::endl;
+    //std::cerr<<"PRESSED"<<std::endl;
     this->setPressed();
     update();
     QGraphicsItem::mousePressEvent(event);

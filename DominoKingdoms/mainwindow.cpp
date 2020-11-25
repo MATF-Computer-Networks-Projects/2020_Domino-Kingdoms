@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 #include <QPushButton>
+#include <QPixmap>
 #include <QStackedWidget>
 #include <QGridLayout>
 #include <QScrollArea>
@@ -228,8 +229,9 @@ void MainWindow::back_to_menu(){
 }
 
 void MainWindow::take_cards_from_deck(){
-    std::cout << "pokrenuto" << std::endl;
-    if(firstRowDF[0]->getIsEmpty() && firstRowDF[1]->getIsEmpty() && firstRowDF[2]->getIsEmpty() && firstRowDF[3]->getIsEmpty()){
+    if(firstRowDF[0]->getIsEmpty() && firstRowDF[1]->getIsEmpty() &&
+            firstRowDF[2]->getIsEmpty() && firstRowDF[3]->getIsEmpty()){
+
         for(int i = 0; i < 4; i++){
             auto it = deckSet.begin();
             firstRowDF[i]->setDomino(*it);
@@ -257,4 +259,34 @@ void MainWindow::take_cards_from_deck(){
             secondRowDF[i]->setIsEmpty(false);
         }
     }
+
+//    /*DEBUG PROBA*/
+//    QPixmap pm1 = QPixmap(":/Images/Images/1.jpeg");
+//    QPixmap pm2 = QPixmap(":/Images/Images/2.jpg");
+//    QPixmap pm3 = QPixmap(":/Images/Images/3.jpg");
+//    QPixmap pm4 = QPixmap(":/Images/Images/4.jpeg");
+//    QPixmap pm5 = QPixmap(":/Images/Images/5.jpg");
+//    QPixmap pm6 = QPixmap(":/Images/Images/6.png");
+
+
+//    QPainter *painter = new QPainter();
+
+//    painter->drawPixmap(0,0,100,100,pm1);
+//    painter->drawPixmap(100,0,100,100,pm2);
+//    painter->drawPixmap(300,0,100,100,pm3);
+//    painter->drawPixmap(400,0,100,100,pm1);
+//    painter->drawPixmap(0,200,100,100,pm4);
+//    painter->drawPixmap(100,200,100,100,pm5);
+//    painter->drawPixmap(300,200,100,100,pm4);
+//    painter->drawPixmap(400,200,100,100,pm6);
+
+//    painter->drawPixmap(0,400,100,100,pm1);
+//    painter->drawPixmap(100,400,100,100,pm2);
+//    painter->drawPixmap(300,400,100,100,pm3);
+//    painter->drawPixmap(400,400,100,100,pm1);
+//    painter->drawPixmap(0,600,100,100,pm4);
+//    painter->drawPixmap(100,600,100,100,pm5);
+//    painter->drawPixmap(300,600,100,100,pm4);
+//    painter->drawPixmap(400,600,100,100,pm6);
+
 }
