@@ -314,23 +314,31 @@ QRectF Domino::boundingRect() const {
 
 void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
     if(this->getBoardStatus() != Board_Status::InDeck){
-        if(this->isPressed()){
-            this->rotate();
-            this->unsetPressed();
+        if(isPressed()){
+            rotate();
+            unsetPressed();
         }
-        QPixmap pm_1 = QPixmap(FieldType2QString(this->getFieldType1()));
-        painter->drawPixmap(this->getXP1(),this->getYP1(),this->getWidth(),this->getHeight(),pm_1);
-        if(this->getCrowns1()>0){
-            QPixmap pm_11 = QPixmap(Crowns2QString(this->getCrowns1()));
-            painter->drawPixmap(this->getXP1(),this->getYP1(),this->getWidth(),this->getHeight(),pm_11);
+        QPixmap pm_1 = QPixmap(FieldType2QString(getFieldType1()));
+        painter->drawPixmap(getXP1(),getYP1(),getWidth(),getHeight(),pm_1);
+        if(getCrowns1()>0){
+            QPixmap pm_11 = QPixmap(Crowns2QString(getCrowns1()));
+            painter->drawPixmap(getXP1(),getYP1(),getWidth(),getHeight(),pm_11);
         }
 
-        QPixmap pm_2 = QPixmap(FieldType2QString(this->getFieldType2()));
-        painter->drawPixmap(this->getXP2(),this->getYP2(),this->getWidth(),this->getHeight(),pm_2);
-        if(this->getCrowns2()>0){
-            QPixmap pm_12 = QPixmap(Crowns2QString(this->getCrowns2()));
-            painter->drawPixmap(this->getXP2(),this->getYP2(),this->getWidth(),this->getHeight(),pm_12);
+        QPixmap pm_2 = QPixmap(FieldType2QString(getFieldType2()));
+        painter->drawPixmap(getXP2(),getYP2(),getWidth(),getHeight(),pm_2);
+        if(getCrowns2()>0){
+            QPixmap pm_12 = QPixmap(Crowns2QString(getCrowns2()));
+            painter->drawPixmap(getXP2(),getYP2(),getWidth(),getHeight(),pm_12);
         }
+        QRectF q = boundingRect();
+
+        QPen pen;
+        pen.setColor((Qt::green));
+        pen.setWidth(2);
+
+        painter->setPen(pen);
+        painter->drawRect(q);
     }
 }
 

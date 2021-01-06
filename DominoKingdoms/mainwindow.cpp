@@ -143,12 +143,12 @@ MainWindow::MainWindow(QWidget *parent) :
         for(int j = 0; j < 5; j++)
             tableScene->addRect(200*i, 200*j, 200, 200);
 
-    for(int i = 0; i < 4; i++){
+    /*for(int i = 0; i < 4; i++){
         dominoScene->addRect(0, 200*i, 100, 100);
         dominoScene->addRect(100, 200*i, 100, 100);
         dominoScene->addRect(300, 200*i, 100, 100);
         dominoScene->addRect(400, 200*i, 100, 100);
-    }
+    }*/
 
     /* Setting scenes to views */
     tableView->setScene(tableScene);
@@ -168,7 +168,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainScreen->setLayout(mainScreenLayout);
 
     /* Connecting buttons */
-    connect(player1button, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
+    connect(optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(quitButton, &QPushButton::clicked, this, &MainWindow::back_to_menu);
     connect(ui->newGameButton, &QPushButton::clicked, this, &MainWindow::newGameButton_clicked);
     connect(ui->optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
@@ -189,7 +189,6 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::back_clicked(){
-    std::cout << backIndex << std::endl;
     ui->stackedWidget->setCurrentIndex(backIndex);
 }
 
@@ -210,6 +209,7 @@ void MainWindow::exitButton_clicked(){
 void MainWindow::startLoginButton_clicked(){
     backIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(4);
+    this->showFullScreen();
 }
 
 void MainWindow::rulesOptionsButton_clicked(){
@@ -259,34 +259,5 @@ void MainWindow::take_cards_from_deck(){
             secondRowDF[i]->setIsEmpty(false);
         }
     }
-
-//    /*DEBUG PROBA*/
-//    QPixmap pm1 = QPixmap(":/Images/Images/1.jpeg");
-//    QPixmap pm2 = QPixmap(":/Images/Images/2.jpg");
-//    QPixmap pm3 = QPixmap(":/Images/Images/3.jpg");
-//    QPixmap pm4 = QPixmap(":/Images/Images/4.jpeg");
-//    QPixmap pm5 = QPixmap(":/Images/Images/5.jpg");
-//    QPixmap pm6 = QPixmap(":/Images/Images/6.png");
-
-
-//    QPainter *painter = new QPainter();
-
-//    painter->drawPixmap(0,0,100,100,pm1);
-//    painter->drawPixmap(100,0,100,100,pm2);
-//    painter->drawPixmap(300,0,100,100,pm3);
-//    painter->drawPixmap(400,0,100,100,pm1);
-//    painter->drawPixmap(0,200,100,100,pm4);
-//    painter->drawPixmap(100,200,100,100,pm5);
-//    painter->drawPixmap(300,200,100,100,pm4);
-//    painter->drawPixmap(400,200,100,100,pm6);
-
-//    painter->drawPixmap(0,400,100,100,pm1);
-//    painter->drawPixmap(100,400,100,100,pm2);
-//    painter->drawPixmap(300,400,100,100,pm3);
-//    painter->drawPixmap(400,400,100,100,pm1);
-//    painter->drawPixmap(0,600,100,100,pm4);
-//    painter->drawPixmap(100,600,100,100,pm5);
-//    painter->drawPixmap(300,600,100,100,pm4);
-//    painter->drawPixmap(400,600,100,100,pm6);
-
+    dominoScene->update(dominoView->rect());
 }
