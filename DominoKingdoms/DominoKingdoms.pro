@@ -30,7 +30,9 @@ SOURCES += \
     player.cpp \
     castle_domino.cpp \
     field.cpp \
-    dominofield.cpp
+    dominofield.cpp \
+    dominoscene.cpp \
+    tablescene.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +41,9 @@ HEADERS += \
     enums.h \
     castle_domino.hpp \
     field.hpp \
-    dominofield.h
+    dominofield.h \
+    dominoscene.h \
+    tablescene.h
 
 FORMS += \
         mainwindow.ui

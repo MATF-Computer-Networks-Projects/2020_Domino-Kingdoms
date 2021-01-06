@@ -18,11 +18,14 @@
 #include <QPainter>
 #include <dominofield.h>
 #include "domino.hpp"
+#include "player.hpp"
 #include "castle_domino.hpp"
 #include <iterator>
 #include <set>
 #include <unordered_set>
 #include <algorithm>
+#include "dominoscene.h"
+#include "tablescene.h"
 
 int backIndex = 0;
 Domino* dominoes[48];
@@ -32,8 +35,8 @@ DominoField* secondRowDF[4];
 
 QGraphicsView *tableView;
 QGraphicsView *dominoView;
-QGraphicsScene *tableScene;
-QGraphicsScene *dominoScene;
+TableScene *tableScene;
+DominoScene *dominoScene;
 
 QPushButton* initializeButton(QString text){
     QPushButton *button = new QPushButton(text);
@@ -47,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
+
+    Player *player1 = new Player("prvi", 1);
+    Player *player2 = new Player("prvi", 2);
+    Player *player3 = new Player("prvi", 3);
+    Player *player4 = new Player("prvi", 4);
 
     srand(time(0));
 
@@ -67,8 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Initializing views and scenes */
     tableView = new QGraphicsView(ui->mainScreen);
     dominoView = new QGraphicsView(ui->mainScreen);
-    tableScene = new QGraphicsScene(ui->mainScreen);
-    dominoScene = new QGraphicsScene(ui->mainScreen);
+    tableScene = new TableScene(ui->mainScreen);
+    dominoScene = new DominoScene(ui->mainScreen);
 
     /* Initializing Dominoes */
     dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
@@ -143,12 +151,12 @@ MainWindow::MainWindow(QWidget *parent) :
         for(int j = 0; j < 5; j++)
             tableScene->addRect(200*i, 200*j, 200, 200);
 
-    /*for(int i = 0; i < 4; i++){
+    for(int i = 0; i < 4; i++){
         dominoScene->addRect(0, 200*i, 100, 100);
         dominoScene->addRect(100, 200*i, 100, 100);
         dominoScene->addRect(300, 200*i, 100, 100);
         dominoScene->addRect(400, 200*i, 100, 100);
-    }*/
+    }
 
     /* Setting scenes to views */
     tableView->setScene(tableScene);

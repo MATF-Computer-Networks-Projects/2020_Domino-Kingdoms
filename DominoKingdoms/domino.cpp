@@ -314,10 +314,10 @@ QRectF Domino::boundingRect() const {
 
 void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
     if(this->getBoardStatus() != Board_Status::InDeck){
-        if(isPressed()){
+        /*if(isPressed()){
             rotate();
             unsetPressed();
-        }
+        }*/
         QPixmap pm_1 = QPixmap(FieldType2QString(getFieldType1()));
         painter->drawPixmap(getXP1(),getYP1(),getWidth(),getHeight(),pm_1);
         if(getCrowns1()>0){
