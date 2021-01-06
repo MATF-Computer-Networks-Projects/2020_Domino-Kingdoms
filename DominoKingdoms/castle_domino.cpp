@@ -6,10 +6,10 @@
 #include "castle_domino.hpp"
 
 CastleDomino::CastleDomino(int pid){
-    this->setXP(400);
-    this->setYP(400);
-    this->setWidth(200);
-    this->setHeight(200);
+    this->setXP(300);
+    this->setYP(300);
+    this->setWidth(150);
+    this->setHeight(150);
     this->setCurrentlyCompatible(false);
     this->setPID(pid);
 }

@@ -2,6 +2,7 @@
 #define DOMINO_HPP
 
 #include "enums.h"
+#include "player.hpp"
 #include <QGraphicsItem>
 
 class Domino : public QGraphicsItem
@@ -10,18 +11,15 @@ class Domino : public QGraphicsItem
 private: //variables
 
     int m_xPos1, m_yPos1, m_xPos2, m_yPos2, m_width, m_height,
-        m_value, m_crowns1, m_crowns2, m_reservedBy;
+        m_value, m_crowns1, m_crowns2;
+    Player *m_player;
+    DominoStatus m_dominoStatus;
     bool m_currentlyCompatible, m_pressed, m_held;
     Board_Status m_boardStatus;
     FieldType m_fieldType1, m_fieldType2;
 
 public: //methods
 
-    Domino(int xPos1, int yPos1, int xPos2,int yPos2,
-           int width, int height,
-           int value, int crowns1, int crowns2,
-           int reservedBy,bool currentlyCompatible, Board_Status boardStatus,
-           FieldType ft1, FieldType ft2);
 
     Domino(int crowns1, int crowns2,FieldType fieldType1, FieldType fieldType2, int value, Board_Status boardStatus);
 
@@ -33,7 +31,6 @@ public: //methods
 
     int getCrowns2();
     int getCrowns1();
-    int getReservedBy();
     int getXP1() const;
     int getYP1() const;
     int getXP2() const;
@@ -62,6 +59,12 @@ public: //methods
     void changeSize(int);
 
     DominoPosition position2DominoPosition(int x1,int y1,int x2,int y2,int w,int h) const;
+
+    DominoStatus getDominoStatus() const;
+    void setDominoStatus(const DominoStatus &dominoStatus);
+
+    Player *getPlayer() const;
+    void setPlayer(Player *player);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

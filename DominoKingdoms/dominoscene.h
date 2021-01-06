@@ -9,6 +9,10 @@
 #include <vector>
 #include <QGraphicsSceneMouseEvent>
 #include "dominofield.h"
+#include "player.hpp"
+#include "tablescene.h"
+
+class TableScene;
 
 class DominoScene : public QGraphicsScene
 {
@@ -27,11 +31,20 @@ public:
     QGraphicsView *view() const;
     void setView(QGraphicsView *view);
 
+    Player *p1() const;
+    void setP1(Player *p1);
+
+    TableScene *otherScene() const;
+    void setOtherScene(TableScene *otherScene);
+
 private:
     std::vector<DominoField*> *m_firstRow;
     std::vector<DominoField*> *m_secondRow;
     Domino* m_clickedDomino;
     QGraphicsView *m_view;
+    Player *m_p1;
+    TableScene *m_otherScene;
+
 };
 
 #endif // DOMINOSCENE_H

@@ -32,4 +32,10 @@ enum class NextTaskDomino{
     ReserveDomino
 };
 
+enum class DominoStatus{
+    Reserved,
+    Placed,
+    Idle
+};
+
 #endif // ENUMS_H

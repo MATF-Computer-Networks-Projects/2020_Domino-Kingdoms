@@ -8,6 +8,10 @@
 #include <QGraphicsView>
 #include <vector>
 #include <QGraphicsSceneMouseEvent>
+#include "dominoscene.h"
+#include <QKeyEvent>
+
+class DominoScene;
 
 class TableScene : public QGraphicsScene
 {
@@ -18,8 +22,23 @@ public:
     QGraphicsView *view() const;
     void setView(QGraphicsView *view);
 
+    Player *p1() const;
+    void setP1(Player *p1);
+
+    Domino *clickedDomino() const;
+    void setClickedDomino(Domino *clickedDomino);
+
+    DominoScene *otherScene() const;
+    void setOtherScene(DominoScene *otherScene);
+
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void keyPressEvent(QKeyEvent *keyEvent);
+
 private:
     QGraphicsView *m_view;
+    DominoScene *m_otherScene;
+    Domino *m_clickedDomino;
+    Player *m_p1;
 };
 
 #endif // TABLESCENE_H

@@ -66,32 +66,35 @@ QString Crowns2QString(int cr){
     }
 }
 
-Domino::Domino(int xPos1, int yPos1, int xPos2,int yPos2,
-               int width, int height,
-               int value, int crowns1, int crowns2,
-               int reservedBy,bool currentlyCompatible, Board_Status boardStatus,
-               FieldType ft1, FieldType ft2)
-    : m_xPos1(xPos1), m_yPos1(yPos1), m_xPos2(xPos2), m_yPos2(yPos2),
-      m_width(width), m_height(height),
-      m_value(value), m_crowns1(crowns1), m_crowns2(crowns2),
-      m_reservedBy(reservedBy), m_currentlyCompatible(currentlyCompatible),
-      m_boardStatus(boardStatus), m_fieldType1(ft1), m_fieldType2(ft2)
+DominoStatus Domino::getDominoStatus() const
 {
-    m_pressed = false;
-    if(!correctDominoPosition(m_xPos1,m_yPos1,m_xPos2,m_yPos2, m_width,m_height)){
-        throw "impossible domino";
-    }
-    setFlag(ItemIsMovable);
+    return m_dominoStatus;
+}
+
+void Domino::setDominoStatus(const DominoStatus &dominoStatus)
+{
+    m_dominoStatus = dominoStatus;
+}
+
+Player *Domino::getPlayer() const
+{
+    return m_player;
+}
+
+void Domino::setPlayer(Player *player)
+{
+    m_player = player;
 }
 
 Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldType2, int value, Board_Status boardStatus):
       m_xPos1(0), m_yPos1(0), m_xPos2(0), m_yPos2(0),
       m_width(100), m_height(100),
       m_value(value), m_crowns1(crowns1), m_crowns2(crowns2),
-      m_reservedBy(-1), m_currentlyCompatible(false),
+      m_currentlyCompatible(false),
       m_boardStatus(boardStatus), m_fieldType1(fieldType1), m_fieldType2(fieldType2)
 {
-
+    m_dominoStatus = DominoStatus::Idle;
+    m_player = nullptr;
 }
 
 bool Domino::compatibleWith(Domino){
@@ -131,24 +134,30 @@ void Domino::setCurrentlyCompatible(bool cc){
 }
 
 void Domino::rotate(){
-    //if(this->getBoardStatus() == Board_Status::OnTable){}
-
     DominoPosition dp = this->position2DominoPosition(this->getXP1(),this->getYP1(),
                                                       this->getXP2(),this->getYP2(),
                                                       this->getWidth(),this->getHeight());
     if(dp == DominoPosition::V12){
+        if(getXP1() - getWidth() < 0)
+            return;
         this->setXP2(this->getXP1()-this->getWidth());
         this->setYP2(this->getYP1());
     }
     else if(dp == DominoPosition::H21){
+        if(getYP1() - getHeight() < 0)
+            return;
         this->setXP2(this->getXP1());
         this->setYP2(this->getYP1()-this->getHeight());
     }
     else if(dp == DominoPosition::V21){
+        if(getXP1() + getWidth() > 600)
+            return;
         this->setXP2(this->getXP1()+this->getWidth());
         this->setYP2(this->getYP1());
     }
     else if(dp == DominoPosition::H12){
+        if(getYP1() + getHeight() > 600)
+            return;
         this->setXP2(this->getXP1());
         this->setYP2(this->getYP1()+this->getHeight());
     }
@@ -163,10 +172,6 @@ int Domino::getCrowns2(){
 
 int Domino::getCrowns1(){
     return m_crowns1;
-}
-
-int Domino::getReservedBy(){
-    return m_reservedBy;
 }
 
 void Domino::setBoardStatus(Board_Status b){
@@ -331,14 +336,25 @@ void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
             QPixmap pm_12 = QPixmap(Crowns2QString(getCrowns2()));
             painter->drawPixmap(getXP2(),getYP2(),getWidth(),getHeight(),pm_12);
         }
+
         QRectF q = boundingRect();
 
         QPen pen;
-        pen.setColor((Qt::green));
-        pen.setWidth(2);
 
-        painter->setPen(pen);
-        painter->drawRect(q);
+        if(m_dominoStatus == DominoStatus::Placed){
+            pen.setColor((Qt::black));
+            pen.setWidth(2);
+
+            painter->setPen(pen);
+            painter->drawRect(q);
+        }
+        else if(m_dominoStatus == DominoStatus::Reserved){
+            pen.setColor(m_player->getColor());
+            pen.setWidth(2);
+
+            painter->setPen(pen);
+            painter->drawRect(q);
+        }
     }
 }
 

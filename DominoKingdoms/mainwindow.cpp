@@ -80,6 +80,11 @@ MainWindow::MainWindow(QWidget *parent) :
     tableScene->setView(tableView);
     dominoScene->setView(dominoView);
 
+    tableScene->setP1(player1);
+    dominoScene->setP1(player1);
+    tableScene->setOtherScene(dominoScene);
+    dominoScene->setOtherScene(tableScene);
+
     /* Initializing Dominoes */
     dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
     dominoes[1] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 2, Board_Status::InDeck);
@@ -147,11 +152,12 @@ MainWindow::MainWindow(QWidget *parent) :
     /* Setting up scenes */
     CastleDomino *castle = new CastleDomino(2);
     tableScene->addItem(castle);
+    player1->set_playerTableField(FieldType::Castle, 0, 2, 2);
 
 
     for(int i = 0; i < 5; i++)
         for(int j = 0; j < 5; j++)
-            tableScene->addRect(200*i, 200*j, 200, 200);
+            tableScene->addRect(150*i, 150*j, 150, 150);
 
     for(int i = 0; i < 4; i++){
         dominoScene->addRect(0, 200*i, 100, 100);

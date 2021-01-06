@@ -54,20 +54,42 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
         std::pair<int, int> position = coordinatesToIndex(x, y);
         int id = position.first;
         int index = position.second;
-        std::vector<DominoField*> *row;
+        std::vector<DominoField*> *column;
 
         if(id == 1)
-            row = m_firstRow;
+            column = m_firstRow;
         else if(id == 2)
-            row = m_secondRow;
+            column = m_secondRow;
 
-        QGraphicsItem *item = itemAt(mouseEvent->scenePos(), QTransform());
-        m_clickedDomino = nullptr;
-        m_clickedDomino = qgraphicsitem_cast<Domino *>(item);
-        if(m_clickedDomino){
-            this->removeItem((*row)[index]->getDomino());
-            (*row)[index]->setDomino(nullptr);
+        m_clickedDomino = (*column)[index]->getDomino();
+
+        if(m_p1->get_nextTask() == NextTaskDomino::ChooseDomino){
+            for(int i = 0; i < 4; i++){
+                this->removeItem((*column)[i]->getDomino());
+                (*column)[i]->setDomino(nullptr);
+            }
+            m_otherScene->setClickedDomino(m_clickedDomino);
+            m_p1->setNextTask(NextTaskDomino::PlaceDomino);
+
+            m_clickedDomino->setXP1(0);
+            m_clickedDomino->setYP1(0);
+            m_clickedDomino->setXP2(150);
+            m_clickedDomino->setYP2(0);
+            m_clickedDomino->changeSize(150);
+            m_otherScene->addItem(m_clickedDomino);
+            m_clickedDomino->setOpacity(0.3);
+            m_clickedDomino->setDominoStatus(DominoStatus::Placed);
+
             this->update(m_view->rect());
+        }
+        else if(m_p1->get_nextTask() == NextTaskDomino::ReserveDomino){
+            m_p1->reserveDomino(m_clickedDomino);
+            m_clickedDomino->setPlayer(m_p1);
+            m_clickedDomino->setDominoStatus(DominoStatus::Reserved);
+            m_p1->setNextTask(NextTaskDomino::ChooseDomino);
+            this->update(m_view->rect());
+            // promeni turn
+            // m_p2->setNextTask(Choosedomino)
         }
     }
 }
@@ -80,4 +102,24 @@ QGraphicsView *DominoScene::view() const
 void DominoScene::setView(QGraphicsView *view)
 {
     m_view = view;
+}
+
+Player *DominoScene::p1() const
+{
+    return m_p1;
+}
+
+void DominoScene::setP1(Player *p1)
+{
+    m_p1 = p1;
+}
+
+TableScene *DominoScene::otherScene() const
+{
+    return m_otherScene;
+}
+
+void DominoScene::setOtherScene(TableScene *otherScene)
+{
+    m_otherScene = otherScene;
 }

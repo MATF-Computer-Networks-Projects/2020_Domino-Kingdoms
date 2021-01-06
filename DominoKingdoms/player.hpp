@@ -2,6 +2,9 @@
 #include "field.hpp"
 #include <vector>
 #include <string>
+#include <QColor>
+
+class Domino;
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -15,8 +18,10 @@ private: //variables
     std::string m_name;
     int m_id;
     Domino *m_selectedDomino;
+    Domino *m_reservedDomino;
     NextTaskDomino m_nextTask;
     std::vector<std::vector<Field>> m_playerTable;
+    QColor color;
 
 public: //methods
 
@@ -28,7 +33,7 @@ public: //methods
     std::vector<std::vector<Field> > get_playerTable();
     Field get_playerTableField(int x, int y);
 
-    void reserveDomino(Domino d);
+    void reserveDomino(Domino *d);
     QString NextTaskDomino1(NextTaskDomino ntd);
     void set_id(int id);
     void set_name(const std::string &name);
@@ -38,6 +43,13 @@ public: //methods
 
     Domino *getSelectedDomino() const;
     void setSelectedDomino(Domino *selectedDomino);
+
+    void setNextTask(const NextTaskDomino &nextTask);
+    QColor getColor() const;
+    void setColor(const QColor &value);
+
+    bool canPlaceDomino(Domino *domino);
+    bool compatibleDomino(int i1, int j1, int i2, int j2, FieldType fieldType);
 };
 
 #endif // PLAYER_H
