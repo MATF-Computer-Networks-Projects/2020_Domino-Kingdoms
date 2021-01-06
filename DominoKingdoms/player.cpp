@@ -3,6 +3,16 @@
 #include "player.hpp"
 #include "enums.h"
 
+Domino *Player::getSelectedDomino() const
+{
+    return m_selectedDomino;
+}
+
+void Player::setSelectedDomino(Domino *selectedDomino)
+{
+    m_selectedDomino = selectedDomino;
+}
+
 Player::Player(std::string name, int id):
     m_name(name), m_id(id){
     if(id<0 || id >4){

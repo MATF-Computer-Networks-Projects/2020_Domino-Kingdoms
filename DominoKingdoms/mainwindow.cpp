@@ -30,8 +30,8 @@
 int backIndex = 0;
 Domino* dominoes[48];
 std::unordered_set<Domino*> deckSet;
-DominoField* firstRowDF[4];
-DominoField* secondRowDF[4];
+std::vector<DominoField*> firstRowDF;
+std::vector<DominoField*> secondRowDF;
 
 QGraphicsView *tableView;
 QGraphicsView *dominoView;
@@ -77,6 +77,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dominoView = new QGraphicsView(ui->mainScreen);
     tableScene = new TableScene(ui->mainScreen);
     dominoScene = new DominoScene(ui->mainScreen);
+    tableScene->setView(tableView);
+    dominoScene->setView(dominoView);
 
     /* Initializing Dominoes */
     dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
@@ -135,12 +137,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Initializing domino fields */
     for(int i = 0; i < 4; i++)
-        firstRowDF[i] = new DominoField(0, 200*i, 100, 200*i);
+        firstRowDF.push_back(new DominoField(0, 200*i, 100, 200*i));
     for(int i = 0; i < 4; i++)
-        secondRowDF[i] = new DominoField(300, 200*i, 400, 200*i);
+        secondRowDF.push_back(new DominoField(300, 200*i, 400, 200*i));
 
-    //tableScene->addItem(d3);
-    //dominoScene->addItem(d3);
+    dominoScene->setFirstRow(&firstRowDF);
+    dominoScene->setSecondRow(&secondRowDF);
 
     /* Setting up scenes */
     CastleDomino *castle = new CastleDomino(2);

@@ -14,6 +14,12 @@ class TableScene : public QGraphicsScene
     Q_OBJECT
 public:
     explicit TableScene(QObject *o = 0);
+
+    QGraphicsView *view() const;
+    void setView(QGraphicsView *view);
+
+private:
+    QGraphicsView *m_view;
 };
 
 #endif // TABLESCENE_H

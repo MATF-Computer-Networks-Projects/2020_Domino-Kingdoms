@@ -36,6 +36,8 @@ public: //methods
     void set_playerTable(const std::vector<std::vector<Field> > &playerTable);
     void set_playerTableField(FieldType fd, int cn, int x, int y);
 
+    Domino *getSelectedDomino() const;
+    void setSelectedDomino(Domino *selectedDomino);
 };
 
 #endif // PLAYER_H
