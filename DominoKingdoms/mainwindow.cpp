@@ -27,10 +27,11 @@
 #include "dominoscene.h"
 #include "tablescene.h"
 #include "game.h"
+#include <QSet>
 
 int backIndex = 0;
 Domino* dominoes[48];
-std::unordered_set<Domino*> deckSet;
+QSet<Domino*> deckSet;
 std::vector<DominoField*> firstColumnDF;
 std::vector<DominoField*> secondColumnDF;
 
@@ -277,6 +278,10 @@ bool isEmptyColumn2(){
 }
 
 void MainWindow::take_cards_from_deck(){
+    if(deckSet.size() <= 0){
+        std::cout << "dosta ste se kartali" << std::endl;
+        return;
+    }
     if(isEmptyColumn1()){
         for(int i = 0; i < 4; i++){
             auto it = deckSet.begin();
