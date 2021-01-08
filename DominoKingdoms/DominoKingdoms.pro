@@ -32,7 +32,8 @@ SOURCES += \
     field.cpp \
     dominofield.cpp \
     dominoscene.cpp \
-    tablescene.cpp
+    tablescene.cpp \
+    game.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +44,8 @@ HEADERS += \
     field.hpp \
     dominofield.h \
     dominoscene.h \
-    tablescene.h
+    tablescene.h \
+    game.h
 
 FORMS += \
         mainwindow.ui

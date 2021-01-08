@@ -1,10 +1,27 @@
 #include "field.hpp"
 #include "enums.h"
 
+bool Field::getVisited() const
+{
+    return m_visited;
+}
+
+void Field::setVisited(bool visited)
+{
+    m_visited = visited;
+}
+
+Field::Field()
+{
+    m_fType = FieldType::Empty;
+    m_crownsNumber = 0;
+    m_visited = false;
+}
+
 Field::Field(FieldType ft, int cn):
     m_fType(ft), m_crownsNumber(cn)
 {
-
+    m_visited = false;
 }
 
 FieldType Field::get_fType(){

@@ -26,6 +26,8 @@ private slots:
     void back_to_menu();
     void back_to_game();
     void take_cards_from_deck();
+    void throw_out_domino_clicked();
+    void calculate_player_scores_clicked();
 
 private:
     Ui::MainWindow *ui;

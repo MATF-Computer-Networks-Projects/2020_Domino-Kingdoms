@@ -103,7 +103,29 @@ void TableScene::keyPressEvent(QKeyEvent *keyEvent)
                 std::cout << "Ne moze ovde postavis brapooo" << std::endl;
             }
         }
+        QWidget *viewport = m_view->viewport();
+        viewport->repaint();
         this->update(m_view->rect());
 
     }
+}
+
+Player *TableScene::currentPlayer() const
+{
+    return m_currentPlayer;
+}
+
+void TableScene::setCurrentPlayer(Player *currentPlayer)
+{
+    m_currentPlayer = currentPlayer;
+}
+
+Player *TableScene::nextPlayer() const
+{
+    return m_nextPlayer;
+}
+
+void TableScene::setNextPlayer(Player *nextPlayer)
+{
+    m_nextPlayer = nextPlayer;
 }

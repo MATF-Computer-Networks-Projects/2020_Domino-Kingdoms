@@ -34,11 +34,19 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void keyPressEvent(QKeyEvent *keyEvent);
 
+    Player *currentPlayer() const;
+    void setCurrentPlayer(Player *currentPlayer);
+
+    Player *nextPlayer() const;
+    void setNextPlayer(Player *nextPlayer);
+
 private:
     QGraphicsView *m_view;
     DominoScene *m_otherScene;
     Domino *m_clickedDomino;
     Player *m_p1;
+    Player *m_currentPlayer;
+    Player *m_nextPlayer;
 };
 
 #endif // TABLESCENE_H

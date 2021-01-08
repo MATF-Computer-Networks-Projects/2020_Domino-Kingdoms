@@ -37,6 +37,9 @@ public:
     TableScene *otherScene() const;
     void setOtherScene(TableScene *otherScene);
 
+    int activeColumn() const;
+    void setActiveColumn(int activeColumn);
+
 private:
     std::vector<DominoField*> *m_firstRow;
     std::vector<DominoField*> *m_secondRow;
@@ -44,6 +47,7 @@ private:
     QGraphicsView *m_view;
     Player *m_p1;
     TableScene *m_otherScene;
+    int m_activeColumn;
 
 };
 

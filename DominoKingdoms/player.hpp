@@ -50,6 +50,9 @@ public: //methods
 
     bool canPlaceDomino(Domino *domino);
     bool compatibleDomino(int i1, int j1, int i2, int j2, FieldType fieldType);
+    void checkNeighbours(QQueue<std::pair<int,int>> *bfsQueue, int x, int y);
+    int BFS(int i, int j);
+    int calculatePoints();
 };
 
 #endif // PLAYER_H

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
 #include <QPushButton>
@@ -26,17 +26,26 @@
 #include <algorithm>
 #include "dominoscene.h"
 #include "tablescene.h"
+#include "game.h"
 
 int backIndex = 0;
 Domino* dominoes[48];
 std::unordered_set<Domino*> deckSet;
-std::vector<DominoField*> firstRowDF;
-std::vector<DominoField*> secondRowDF;
+std::vector<DominoField*> firstColumnDF;
+std::vector<DominoField*> secondColumnDF;
 
 QGraphicsView *tableView;
 QGraphicsView *dominoView;
 TableScene *tableScene;
 DominoScene *dominoScene;
+Player *player1;
+Player *player2;
+Player *player3;
+Player *player4;
+Game *game;
+
+bool firstTime1 = true;
+bool firstTime2 = true;
 
 QPushButton* initializeButton(QString text){
     QPushButton *button = new QPushButton(text);
@@ -51,10 +60,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
 
-    Player *player1 = new Player("prvi", 1);
-    Player *player2 = new Player("prvi", 2);
-    Player *player3 = new Player("prvi", 3);
-    Player *player4 = new Player("prvi", 4);
+    player1 = new Player("prvi", 1);
+    player2 = new Player("prvi", 2);
+    player3 = new Player("prvi", 3);
+    player4 = new Player("prvi", 4);
+
+    game = new Game();
 
     srand(time(0));
 
@@ -63,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *player1button = initializeButton("p1Button");
     QPushButton *player2button = initializeButton("p2Button");
     QPushButton *player3button = initializeButton("p3Button");
+    QPushButton *throwOutButton = initializeButton("Throw Out");
+    QPushButton *calculateButton = initializeButton("Calculate");
     QPushButton *deckButton = initializeButton("Deck");
     QPushButton *optionsButton = initializeButton("Options");
     QPushButton *quitButton = initializeButton("Quit");
@@ -142,12 +155,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     /* Initializing domino fields */
     for(int i = 0; i < 4; i++)
-        firstRowDF.push_back(new DominoField(0, 200*i, 100, 200*i));
+        firstColumnDF.push_back(new DominoField(0, 200*i, 100, 200*i));
     for(int i = 0; i < 4; i++)
-        secondRowDF.push_back(new DominoField(300, 200*i, 400, 200*i));
+        secondColumnDF.push_back(new DominoField(300, 200*i, 400, 200*i));
 
-    dominoScene->setFirstRow(&firstRowDF);
-    dominoScene->setSecondRow(&secondRowDF);
+    dominoScene->setFirstRow(&firstColumnDF);
+    dominoScene->setSecondRow(&secondColumnDF);
+    tableScene->setCurrentPlayer(player1);
 
     /* Setting up scenes */
     CastleDomino *castle = new CastleDomino(2);
@@ -174,6 +188,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mainScreenLayout->addWidget(player1button, 11, 0, 2, 1);
     mainScreenLayout->addWidget(player2button, 11, 1, 2, 1);
     mainScreenLayout->addWidget(player3button, 11, 2, 2, 1);
+    mainScreenLayout->addWidget(throwOutButton, 11, 3, 2, 1);
+    mainScreenLayout->addWidget(calculateButton, 11, 4, 2, 1);
     mainScreenLayout->addWidget(deckButton, 0, 9, 1, 1);
     mainScreenLayout->addWidget(optionsButton, 11, 9, 1, 1);
     mainScreenLayout->addWidget(quitButton, 12, 9, 1, 1);
@@ -197,6 +213,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->backRulesButton, &QPushButton::clicked, this, &MainWindow::back_rules_clicked);
     connect(ui->pbBackNewGame, &QPushButton::clicked, this, &MainWindow::back_clicked);
     connect(deckButton, &QPushButton::clicked, this, &MainWindow::take_cards_from_deck);
+    connect(throwOutButton, &QPushButton::clicked, this, &MainWindow::throw_out_domino_clicked);
+    connect(calculateButton, &QPushButton::clicked, this, &MainWindow::calculate_player_scores_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -244,36 +262,84 @@ void MainWindow::back_to_menu(){
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-void MainWindow::take_cards_from_deck(){
-    if(firstRowDF[0]->getIsEmpty() && firstRowDF[1]->getIsEmpty() &&
-            firstRowDF[2]->getIsEmpty() && firstRowDF[3]->getIsEmpty()){
+bool isEmptyColumn1(){
+    if(firstColumnDF[0]->getIsEmpty() && firstColumnDF[1]->getIsEmpty() &&
+            firstColumnDF[2]->getIsEmpty() && firstColumnDF[3]->getIsEmpty())
+        return true;
+    return false;
+}
 
+bool isEmptyColumn2(){
+    if(secondColumnDF[0]->getIsEmpty() && secondColumnDF[1]->getIsEmpty() &&
+            secondColumnDF[2]->getIsEmpty() && secondColumnDF[3]->getIsEmpty())
+        return true;
+    return false;
+}
+
+void MainWindow::take_cards_from_deck(){
+    if(isEmptyColumn1()){
         for(int i = 0; i < 4; i++){
             auto it = deckSet.begin();
-            firstRowDF[i]->setDomino(*it);
+            firstColumnDF[i]->setDomino(*it);
             deckSet.erase(it);
         }
         for(int i = 0; i < 4; i++){
-            auto it = deckSet.begin();
-            secondRowDF[i]->setDomino(*it);
-            deckSet.erase(it);
+            firstColumnDF[i]->getDomino()->setXP1(firstColumnDF[i]->getX1());
+            firstColumnDF[i]->getDomino()->setYP1(firstColumnDF[i]->getY1());
+            firstColumnDF[i]->getDomino()->setXP2(firstColumnDF[i]->getX2());
+            firstColumnDF[i]->getDomino()->setYP2(firstColumnDF[i]->getY2());
+            firstColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+            firstColumnDF[i]->getDomino()->setPlayer(player1);
+            dominoScene->addItem(firstColumnDF[i]->getDomino());
+            firstColumnDF[i]->setIsEmpty(false);
         }
-        for(int i = 0; i < 4; i++){
-            firstRowDF[i]->getDomino()->setXP1(firstRowDF[i]->getX1());
-            firstRowDF[i]->getDomino()->setYP1(firstRowDF[i]->getY1());
-            firstRowDF[i]->getDomino()->setXP2(firstRowDF[i]->getX2());
-            firstRowDF[i]->getDomino()->setYP2(firstRowDF[i]->getY2());
-            firstRowDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
-            dominoScene->addItem(firstRowDF[i]->getDomino());
-            firstRowDF[i]->setIsEmpty(false);
-            secondRowDF[i]->getDomino()->setXP1(secondRowDF[i]->getX1());
-            secondRowDF[i]->getDomino()->setYP1(secondRowDF[i]->getY1());
-            secondRowDF[i]->getDomino()->setXP2(secondRowDF[i]->getX2());
-            secondRowDF[i]->getDomino()->setYP2(secondRowDF[i]->getY2());
-            secondRowDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
-            dominoScene->addItem(secondRowDF[i]->getDomino());
-            secondRowDF[i]->setIsEmpty(false);
+        dominoScene->setActiveColumn(2);
+        if(!firstTime1){
+            game->setupQueue(secondColumnDF);
+            firstTime1 = false;
         }
     }
+    else if(isEmptyColumn2()){
+        for(int i = 0; i < 4; i++){
+            auto it = deckSet.begin();
+            secondColumnDF[i]->setDomino(*it);
+            deckSet.erase(it);
+        }
+        for(int i = 0; i < 4; i++){
+            secondColumnDF[i]->getDomino()->setXP1(secondColumnDF[i]->getX1());
+            secondColumnDF[i]->getDomino()->setYP1(secondColumnDF[i]->getY1());
+            secondColumnDF[i]->getDomino()->setXP2(secondColumnDF[i]->getX2());
+            secondColumnDF[i]->getDomino()->setYP2(secondColumnDF[i]->getY2());
+            secondColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+            secondColumnDF[i]->getDomino()->setPlayer(player1);
+            dominoScene->addItem(secondColumnDF[i]->getDomino());
+            secondColumnDF[i]->setIsEmpty(false);
+        }
+        dominoScene->setActiveColumn(1);
+        if(!firstTime2){
+            game->setupQueue(firstColumnDF);
+            firstTime2 = false;
+        }
+    }
+    else{
+        std::cout << "Ne mozes da delis karte sad" << std::endl;
+        return;
+    }
+
     dominoScene->update(dominoView->rect());
+}
+
+void MainWindow::throw_out_domino_clicked()
+{
+    tableScene->removeItem(tableScene->clickedDomino());
+    tableScene->clickedDomino()->hide();
+    tableScene->setClickedDomino(nullptr);
+    tableScene->update(tableScene->view()->rect());
+    tableScene->currentPlayer()->setNextTask(NextTaskDomino::ReserveDomino);
+}
+
+void MainWindow::calculate_player_scores_clicked()
+{
+    int points = player1->calculatePoints();
+    std::cout << points << std::endl;
 }

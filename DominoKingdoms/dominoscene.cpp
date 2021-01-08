@@ -61,12 +61,21 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
         else if(id == 2)
             column = m_secondRow;
 
+        if(id == -1 || index == -1)
+            return;
+
         m_clickedDomino = (*column)[index]->getDomino();
 
-        if(m_p1->get_nextTask() == NextTaskDomino::ChooseDomino){
+        if(m_p1->get_nextTask() == NextTaskDomino::ChooseDomino &&
+                m_clickedDomino->getPlayer() == m_p1){
+
+            if((m_activeColumn == 1 && id == 2) || (m_activeColumn == 2 && id == 1))
+                return;
+
             for(int i = 0; i < 4; i++){
                 this->removeItem((*column)[i]->getDomino());
                 (*column)[i]->setDomino(nullptr);
+                (*column)[i]->setIsEmpty(true);
             }
             m_otherScene->setClickedDomino(m_clickedDomino);
             m_p1->setNextTask(NextTaskDomino::PlaceDomino);
@@ -77,7 +86,7 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             m_clickedDomino->setYP2(0);
             m_clickedDomino->changeSize(150);
             m_otherScene->addItem(m_clickedDomino);
-            m_clickedDomino->setOpacity(0.3);
+            m_clickedDomino->setOpacity(0.4);
             m_clickedDomino->setDominoStatus(DominoStatus::Placed);
 
             this->update(m_view->rect());
@@ -122,4 +131,14 @@ TableScene *DominoScene::otherScene() const
 void DominoScene::setOtherScene(TableScene *otherScene)
 {
     m_otherScene = otherScene;
+}
+
+int DominoScene::activeColumn() const
+{
+    return m_activeColumn;
+}
+
+void DominoScene::setActiveColumn(int activeColumn)
+{
+    m_activeColumn = activeColumn;
 }

@@ -19,8 +19,6 @@ private: //variables
     FieldType m_fieldType1, m_fieldType2;
 
 public: //methods
-
-
     Domino(int crowns1, int crowns2,FieldType fieldType1, FieldType fieldType2, int value, Board_Status boardStatus);
 
     void rotate();

@@ -2,6 +2,9 @@
 //#include "table.hpp"
 #include "player.hpp"
 #include "enums.h"
+#include <QQueue>
+#include "field.hpp"
+#include <iostream>
 
 Domino *Player::getSelectedDomino() const
 {
@@ -73,6 +76,72 @@ bool Player::compatibleDomino(int i1, int j1, int i2, int j2, FieldType fieldTyp
         return true;
     else
         return false;
+}
+
+void Player::checkNeighbours(QQueue<std::pair<int,int>>* bfsQueue, int x, int y)
+{
+    Field f;
+    FieldType currFieldType = m_playerTable[x][y].get_fType();
+
+    if(x+1 <= 4){
+        f = m_playerTable[x+1][y];
+        if(f.get_fType() == currFieldType && !f.getVisited()){
+            bfsQueue->enqueue({x+1, y});
+        }
+    }
+    if(x-1 >= 0){
+        f = m_playerTable[x-1][y];
+        if(f.get_fType() == currFieldType && !f.getVisited()){
+            bfsQueue->enqueue({x-1, y});
+        }
+    }
+    if(y+1 <= 4){
+        f = m_playerTable[x][y+1];
+        if(f.get_fType() == currFieldType && !f.getVisited()){
+            bfsQueue->enqueue({x, y+1});
+        }
+    }
+    if(y-1 >= 0){
+        f = m_playerTable[x][y-1];
+        if(f.get_fType() == currFieldType && !f.getVisited()){
+            bfsQueue->enqueue({x, y-1});
+        }
+    }
+}
+
+int Player::BFS(int i, int j)
+{
+    QQueue<std::pair<int,int>> bfsQueue;
+    bfsQueue.enqueue({i,j});
+
+    int fieldNumber = 0;
+    int crownNumber = 0;
+
+    while(bfsQueue.size() > 0){
+        std::pair<int, int> pair = bfsQueue.dequeue();
+        int x = pair.first;
+        int y = pair.second;
+        m_playerTable[x][y].setVisited(true);
+
+        fieldNumber++;
+        crownNumber += m_playerTable[x][y].get_crownsNumber();
+        checkNeighbours(&bfsQueue, x, y);
+    }
+    return fieldNumber * crownNumber;
+}
+
+int Player::calculatePoints()
+{
+    int score = 0;
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < 5; j++){
+            if(!m_playerTable[i][j].getVisited()){
+                score += BFS(i, j);
+            }
+        }
+    }
+
+    return score;
 }
 
 Player::Player(std::string name, int id):
