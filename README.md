@@ -1,4 +1,7 @@
 # Domino Kingdoms
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/57442a879e9b425990f5fda60ba25df2)](https://app.codacy.com/gh/MATF-Computer-Networks-Projects/2020_Domino-Kingdoms?utm_source=github.com&utm_medium=referral&utm_content=MATF-Computer-Networks-Projects/2020_Domino-Kingdoms&utm_campaign=Badge_Grade)
+
 ## Board game that you'll like.
 ### Description
 In  _*Domino Kingdoms*_, you are a lord seeking new lands in which to expand your kingdom. You must explore all the lands, including wheat fields, lakes, and mountains, in order to spot the best plots, while competing with other lords to acquire them first.
