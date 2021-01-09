@@ -22,10 +22,10 @@ public:
     struct forUpdate
     {
         forUpdate(Domino* d) {
-            int forUpdateX1 = d->getXP1();
-            int forUpdateY1 = d->getYP1();
-            int forUpdateX2 = d->getXP2();
-            int forUpdateY2 = d->getYP2();
+             forUpdateX1 = d->getXP1();
+             forUpdateY1 = d->getYP1();
+             forUpdateX2 = d->getXP2();
+             forUpdateY2 = d->getYP2();
         }
 
         int forUpdateX1;

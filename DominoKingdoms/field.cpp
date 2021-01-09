@@ -59,7 +59,7 @@ Field::Field(const Field &other)
 
 QRectF Field::boundingRect() const
 {
-    return QRectF(QPoint(0,0),QPointF(100,100));
+    return QRectF(QPointF(0,0),QPointF(100,100));
 }
 
 void Field::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
