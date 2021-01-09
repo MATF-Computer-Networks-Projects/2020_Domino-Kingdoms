@@ -188,9 +188,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->OtherPlayerScreen->setLayout(otherSceneLayout);
 
-    for(int i = 0; i < 5; i++)
-        for(int j = 0; j < 5; j++)
-            otherScene->addRect(100*i, 100*j, 100, 100);
+
 
     otherScene->update(otherView->rect());
     /* Connecting buttons */
@@ -442,7 +440,16 @@ void MainWindow::socketReadyRead()
     m_in>>type;
 
     if(type == Signals::sending_table){
-        //otherScene->clear();
+
+        for(int i = 0; i < 5; i++){
+            for(int j = 0; j < 5; j++){
+                otherScene->addRect(100*i, 100*j, 100, 100);
+            }
+        }
+        otherView->setScene(otherScene);
+
+        otherScene->update(otherScene->view()->rect());
+        otherScene->clear();
         Field field;
         int nxp1;
         int nyp1;
@@ -453,11 +460,12 @@ void MainWindow::socketReadyRead()
                 m_in>>nxp1>>nyp1>>nft1>>nc1;
                 std::cout<<nxp1<<nyp1<<nft1<<nc1<<std::endl;
                 field = Field((FieldType)nft1,nc1);
-                //otherScene->addItem(&field);
-                //field.setPos(i*100,j*100);
+                otherScene->addItem(&field);
+                field.setPos(i*100,j*100);
             }
         }
-        //otherScene->update(otherScene->view()->rect());
+        otherView->setScene(otherScene);
+        otherScene->update(otherScene->view()->rect());
 
     }
 

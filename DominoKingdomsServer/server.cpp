@@ -94,6 +94,9 @@ void server::socketReadyRead()
 
     else if(type == Signals::request_player1){
 
+        std::cout<<"Treba da pokazem polja playera 1"<<std::endl;
+
+
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_9);
