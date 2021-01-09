@@ -74,6 +74,7 @@ private slots:
     void socketReadyRead();
 
     void recieveUpdate();
+    void setDeck();
 
 
 
