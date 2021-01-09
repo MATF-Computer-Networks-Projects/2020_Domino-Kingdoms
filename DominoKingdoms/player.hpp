@@ -26,6 +26,7 @@ private: //variables
 public: //methods
 
     Player(std::string name, int id);
+//    Player(Player *other);
     int countScore();
     int get_id();
     std::string get_name();

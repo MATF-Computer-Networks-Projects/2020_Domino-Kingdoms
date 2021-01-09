@@ -9,6 +9,7 @@ public:
     const static int request_player3 = 3;
     const static int send_update = 4;
     const static int sending_table = 5;
+    const static int player_not_found = 6;
 };
 
 #endif // SIGNALS_H

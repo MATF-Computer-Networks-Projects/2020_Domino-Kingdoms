@@ -137,8 +137,6 @@ MainWindow::MainWindow(QWidget *parent) :
     tableView->setScene(tableScene);
     dominoView->setScene(dominoScene);
 
-
-
     /* Setting up layout */
     mainScreenLayout->addWidget(player1button, 11, 0, 2, 1);
     mainScreenLayout->addWidget(player2button, 11, 1, 2, 1);
@@ -478,6 +476,13 @@ void MainWindow::socketReadyRead()
         }
         otherScene->update(otherScene->view()->rect());
 
+    }
+    else if(type == Signals::player_not_found){
+        std::cout<<"dobio signal player not found"<<std::endl;
+        QMessageBox mb;
+        mb.setText("Player not found!");
+        mb.setIcon(QMessageBox::Warning);
+        mb.exec();
     }
 
 

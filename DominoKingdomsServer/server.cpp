@@ -102,6 +102,27 @@ void server::socketReadyRead()
         out.setVersion(QDataStream::Qt_5_9);
 
         Player *p = _clients[client];
+
+        int counter = 0;
+        bool found = false;
+        auto it = _clients.begin();
+        for(it = _clients.begin(); it != _clients.end(); it++){
+            if((*it)->get_id() != p->get_id()){
+                counter++;
+                if(counter == 1){
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if(!found){
+            std::cout<<"Player not found"<<std::endl;
+            out<<Signals::player_not_found;
+            client->write(block);
+            return;
+        }
+        std::cout<<"Player found!"<<std::endl;
+
         int nxp1;
         int nyp1;
         int nft1;
@@ -115,8 +136,8 @@ void server::socketReadyRead()
 
                 nxp1 = i;
                 nyp1 = j;
-                nft1 = static_cast<int>( p->get_playerTableField(i,j).get_fType());
-                nc1 =  p->get_playerTableField(i,j).get_crownsNumber();
+                nft1 = static_cast<int>( (*it)->get_playerTableField(i,j).get_fType());
+                nc1 =  (*it)->get_playerTableField(i,j).get_crownsNumber();
 
                 out<<nxp1<<nyp1<<nft1<<nc1;
             }

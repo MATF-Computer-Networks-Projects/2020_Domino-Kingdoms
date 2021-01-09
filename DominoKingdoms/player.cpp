@@ -173,6 +173,16 @@ Player::Player(std::string name, int id):
     }
 }
 
+//Player::Player(Player *other)
+//{
+//    //copying only its state
+//    for(int i = 0;i<5;i++){
+//        for(int j = 0;j<5;j++){
+//            m_playerTable[i][j] = other->get_playerTableField(i,j);
+//        }
+//    }
+//}
+
 int Player::countScore(){
     //todo
     return 0; //to eliminate warning

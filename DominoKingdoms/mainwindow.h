@@ -33,6 +33,7 @@
 #include <QSet>
 #include <QTcpSocket>
 #include <QDataStream>
+#include <QMessageBox>
 #include "otherscene.h"
 
 #include "../DominoKingdomsServer/signals.h"
