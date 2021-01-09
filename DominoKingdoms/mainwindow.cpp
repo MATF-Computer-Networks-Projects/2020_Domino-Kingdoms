@@ -11,6 +11,7 @@ QGraphicsView *tableView;
 QGraphicsView *dominoView;
 TableScene *tableScene;
 DominoScene *dominoScene;
+OtherScene *otherScene;
 Player *player1;
 Game *game;
 
@@ -69,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dominoScene->setP1(player1);
     tableScene->setOtherScene(dominoScene);
     dominoScene->setOtherScene(tableScene);
+
+
 
     /* Initializing Dominoes */
     dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
@@ -156,6 +159,8 @@ MainWindow::MainWindow(QWidget *parent) :
     tableView->setScene(tableScene);
     dominoView->setScene(dominoScene);
 
+
+
     /* Setting up layout */
     mainScreenLayout->addWidget(player1button, 11, 0, 2, 1);
     mainScreenLayout->addWidget(player2button, 11, 1, 2, 1);
@@ -174,7 +179,7 @@ MainWindow::MainWindow(QWidget *parent) :
     otherView = new QGraphicsView(ui->mainScreen);
 
     QGridLayout *otherSceneLayout = new QGridLayout();
-    OtherScene *otherScene = new OtherScene(ui->mainScreen);
+    otherScene = new OtherScene(ui->mainScreen);
     otherScene->setView(otherView);
     QPushButton *otherBack = initializeButton("Back");
 
@@ -183,6 +188,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->OtherPlayerScreen->setLayout(otherSceneLayout);
 
+    for(int i = 0; i < 5; i++)
+        for(int j = 0; j < 5; j++)
+            otherScene->addRect(100*i, 100*j, 100, 100);
+
+    otherScene->update(otherView->rect());
     /* Connecting buttons */
     connect(optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(quitButton, &QPushButton::clicked, this, &MainWindow::back_to_menu);
@@ -359,6 +369,13 @@ void MainWindow::calculate_player_scores_clicked()
 
 void MainWindow::getPlayer1Clicked()
 {
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+    out<<Signals::request_player1;
+
+    clientsSocket->write(block);
+
     backIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(6);
 
@@ -420,7 +437,34 @@ void MainWindow::socketDisconnected()
 
 void MainWindow::socketReadyRead()
 {
+    m_in.startTransaction();
+    int type;
+    m_in>>type;
 
+    if(type == Signals::sending_table){
+        //otherScene->clear();
+        Field field;
+        int nxp1;
+        int nyp1;
+        int nft1;
+        int nc1;
+        for(int i = 0;i<5;i++){
+            for(int j = 0;j<5;j++){
+                m_in>>nxp1>>nyp1>>nft1>>nc1;
+                std::cout<<nxp1<<nyp1<<nft1<<nc1<<std::endl;
+                field = Field((FieldType)nft1,nc1);
+                //otherScene->addItem(&field);
+                //field.setPos(i*100,j*100);
+            }
+        }
+        //otherScene->update(otherScene->view()->rect());
+
+    }
+
+
+    if(!m_in.commitTransaction()){
+        return;
+    }
 }
 
 void MainWindow::recieveUpdate()

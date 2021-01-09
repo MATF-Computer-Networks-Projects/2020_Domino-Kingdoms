@@ -8,6 +8,7 @@ public:
     const static int request_player2 = 2;
     const static int request_player3 = 3;
     const static int send_update = 4;
+    const static int sending_table = 5;
 };
 
 #endif // SIGNALS_H

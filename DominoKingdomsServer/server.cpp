@@ -89,8 +89,38 @@ void server::socketReadyRead()
         _clients[client]->set_playerTableField((FieldType)nft1,nc1,nxp1,nyp1);
         _clients[client]->set_playerTableField((FieldType)nft2,nc2,nxp2,nyp2);
 
-//        std::cout<<nxp1<<" "<<nyp1<<" "<<nft1<<" "<<nc1<<std::endl;
-//        std::cout<<nxp2<<" "<<nyp2<<" "<<nft2<<" "<<nc2<<std::endl;
+
+    }
+
+    else if(type == Signals::request_player1){
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_9);
+
+        Player *p = _clients[client];
+        int nxp1;
+        int nyp1;
+        int nft1;
+        int nc1;
+
+        out<<Signals::sending_table;
+
+        for(int i = 0;i<5;i++){
+            for(int j = 0;j<5;j++){
+
+
+                nxp1 = i;
+                nyp1 = j;
+                nft1 = static_cast<int>( p->get_playerTableField(i,j).get_fType());
+                nc1 =  p->get_playerTableField(i,j).get_crownsNumber();
+
+                out<<nxp1<<nyp1<<nft1<<nc1;
+            }
+        }
+
+        client->write(block);
+
     }
 
     if(!_in.commitTransaction()){

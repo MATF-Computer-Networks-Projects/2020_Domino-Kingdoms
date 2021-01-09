@@ -31,7 +31,7 @@ public: //methods
     std::string get_name();
     NextTaskDomino get_nextTask();
     std::vector<std::vector<Field> > get_playerTable();
-    Field get_playerTableField(int x, int y);
+    Field get_playerTableField(int x, int y) const;
 
     void reserveDomino(Domino *d);
     QString NextTaskDomino1(NextTaskDomino ntd);

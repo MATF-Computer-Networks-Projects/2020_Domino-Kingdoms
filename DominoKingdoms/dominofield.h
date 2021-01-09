@@ -1,7 +1,7 @@
 #ifndef DOMINOFIELD_H
 #define DOMINOFIELD_H
 
-#include <domino.hpp>
+#include "domino.hpp"
 
 class DominoField
 {

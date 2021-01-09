@@ -195,7 +195,7 @@ std::vector<std::vector<Field> > Player::get_playerTable()
     return m_playerTable;
 }
 
-Field Player::get_playerTableField(int x, int y){
+Field Player::get_playerTableField(int x, int y) const{
     return m_playerTable[x][y];
 }
 
