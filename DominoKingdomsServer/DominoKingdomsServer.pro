@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2020-11-07T16:23:46
+# Project created by QtCreator 2021-01-09T16:36:21
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = DominoKingdoms
+TARGET = DominoKingdomsServer
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -25,32 +25,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    domino.cpp \
-    player.cpp \
-    castle_domino.cpp \
-    field.cpp \
-    dominofield.cpp \
-    dominoscene.cpp \
-    tablescene.cpp \
-    game.cpp \
-    otherscene.cpp
+        server.cpp \
+        ../DominoKingdoms/player.cpp \
+        ../DominoKingdoms/domino.cpp \
+        ../DominoKingdoms/field.cpp \
+        ../DominoKingdoms/dominofield.cpp
+
 
 HEADERS += \
-        mainwindow.h \
-    player.hpp \
-    domino.hpp \
-    enums.h \
-    castle_domino.hpp \
-    field.hpp \
-    dominofield.h \
-    dominoscene.h \
-    tablescene.h \
-    game.h \
-    otherscene.h
+        server.h \
+        signals.h \
+        ../DominoKingdoms/player.hpp \
+        ../DominoKingdoms/domino.hpp \
+        ../DominoKingdoms/field.hpp \
+        ../DominoKingdoms/dominofield.h \
+        ../DominoKingdoms/enums.h
 
-FORMS += \
-        mainwindow.ui
 
-RESOURCES += \
-    resources.qrc
+FORMS +=

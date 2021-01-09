@@ -69,6 +69,18 @@ private:
     Player *m_p1;
     Player *m_currentPlayer;
     Player *m_nextPlayer;
+
+signals:
+    void updatedTable();
+
+public:
+    int xp1,xp2,yp1,yp2;
+    int ft1,ft2;
+    int c1, c2;
+
+
 };
+
+
 
 #endif // TABLESCENE_H

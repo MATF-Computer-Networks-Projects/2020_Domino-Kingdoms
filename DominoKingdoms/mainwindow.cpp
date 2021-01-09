@@ -1,33 +1,5 @@
 ﻿#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <iostream>
-#include <QPushButton>
-#include <QPixmap>
-#include <QStackedWidget>
-#include <QGridLayout>
-#include <QScrollArea>
-#include <QScrollBar>
-#include <QSizePolicy>
-#include <QLabel>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsItem>
-#include <QPen>
-#include <QBrush>
-#include <Qt>
-#include <QPainter>
-#include <dominofield.h>
-#include "domino.hpp"
-#include "player.hpp"
-#include "castle_domino.hpp"
-#include <iterator>
-#include <set>
-#include <unordered_set>
-#include <algorithm>
-#include "dominoscene.h"
-#include "tablescene.h"
-#include "game.h"
-#include <QSet>
+
 
 int backIndex = 0;
 Domino* dominoes[48];
@@ -40,10 +12,9 @@ QGraphicsView *dominoView;
 TableScene *tableScene;
 DominoScene *dominoScene;
 Player *player1;
-Player *player2;
-Player *player3;
-Player *player4;
 Game *game;
+
+QGraphicsView *otherView;
 
 bool firstTime1 = true;
 bool firstTime2 = true;
@@ -58,13 +29,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
+    m_connected = false;
+
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
 
-    player1 = new Player("prvi", 1);
-    player2 = new Player("prvi", 2);
-    player3 = new Player("prvi", 3);
-    player4 = new Player("prvi", 4);
+    player1 = new Player("maria", 1);
 
     game = new Game();
 
@@ -200,6 +171,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->mainScreen->setLayout(mainScreenLayout);
 
+    otherView = new QGraphicsView(ui->mainScreen);
+
+    QGridLayout *otherSceneLayout = new QGridLayout();
+    OtherScene *otherScene = new OtherScene(ui->mainScreen);
+    otherScene->setView(otherView);
+    QPushButton *otherBack = initializeButton("Back");
+
+    otherSceneLayout->addWidget(otherView, 0, 0, 10, 5);
+    otherSceneLayout->addWidget(otherBack, 10, 6, 1, 1);
+
+    ui->OtherPlayerScreen->setLayout(otherSceneLayout);
+
     /* Connecting buttons */
     connect(optionsButton, &QPushButton::clicked, this, &MainWindow::optionsButton_clicked);
     connect(quitButton, &QPushButton::clicked, this, &MainWindow::back_to_menu);
@@ -216,6 +199,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(deckButton, &QPushButton::clicked, this, &MainWindow::take_cards_from_deck);
     connect(throwOutButton, &QPushButton::clicked, this, &MainWindow::throw_out_domino_clicked);
     connect(calculateButton, &QPushButton::clicked, this, &MainWindow::calculate_player_scores_clicked);
+    connect(otherBack, &QPushButton::clicked, this, &MainWindow::back_to_game);
+
+    connect(ui->pbJoin, &QPushButton::clicked, this, &MainWindow::joinServerClicked);
+
+    connect(player1button,&QPushButton::clicked,this,&MainWindow::getPlayer1Clicked);
+    connect(player2button,&QPushButton::clicked,this,&MainWindow::getPlayer2Clicked);
+    connect(player3button,&QPushButton::clicked,this,&MainWindow::getPlayer3Clicked);
+
+    connect(tableScene, &TableScene::updatedTable, this, &MainWindow::recieveUpdate);
+
 }
 
 MainWindow::~MainWindow()
@@ -362,4 +355,91 @@ void MainWindow::calculate_player_scores_clicked()
 {
     int points = player1->calculatePoints();
     std::cout << points << std::endl;
+}
+
+void MainWindow::getPlayer1Clicked()
+{
+    backIndex = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(6);
+
+}
+
+void MainWindow::getPlayer2Clicked()
+{
+    backIndex = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+void MainWindow::getPlayer3Clicked()
+{
+    backIndex = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+void MainWindow::joinServerClicked()
+{
+    playerName = ui->leName->text();
+    if(playerName == ""){
+        ui->leName->setPlaceholderText("Provide a name");
+        return;
+    }
+
+    backIndex = ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(4);
+    this->showFullScreen();
+    std::cout << ui->leName->text().toStdString() << std::endl;
+
+    clientsSocket = new QTcpSocket();
+
+    connect(clientsSocket,SIGNAL(connected()),this,SLOT(socketConnected()));
+    connect(clientsSocket,SIGNAL(disconnected()),this,SLOT(socketDisconnected()));
+    connect(clientsSocket,SIGNAL(readyRead()),this,SLOT(socketReadyRead()));
+
+    clientsSocket->connectToHost("127.0.0.1",8001);
+
+}
+
+void MainWindow::socketConnected()
+{
+
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+    out<<(int)Signals::send_name<<playerName.toUtf8();
+
+    clientsSocket->write(block);
+
+    m_in.setDevice(clientsSocket);
+    m_in.setVersion(QDataStream::Qt_5_9);
+}
+
+void MainWindow::socketDisconnected()
+{
+
+}
+
+void MainWindow::socketReadyRead()
+{
+
+}
+
+void MainWindow::recieveUpdate()
+{
+    int nxp1 = tableScene->xp1;
+    int nxp2 = tableScene->xp2;
+    int nyp1 = tableScene->yp1;
+    int nyp2 = tableScene->yp2;
+    int nft1 = tableScene->ft1;
+    int nft2 = tableScene->ft2;
+    int nc1 = tableScene->c1;
+    int nc2 = tableScene->c2;
+
+    QByteArray block;
+    QDataStream out(&block,QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+    out<<Signals::send_update;
+    out<<nxp1<<nyp1<<nft1<<nc1;
+    out<<nxp2<<nyp2<<nft2<<nc2;
+
+    clientsSocket->write(block);
 }

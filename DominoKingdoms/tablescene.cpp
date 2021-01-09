@@ -120,6 +120,17 @@ void TableScene::setDominoOnTable(){
         m_p1->set_playerTableField(m_clickedDomino->getFieldType1(), m_clickedDomino->getCrowns1(), i1, j1);
         m_p1->set_playerTableField(m_clickedDomino->getFieldType2(), m_clickedDomino->getCrowns2(), i2, j2);
         m_p1->setNextTask(NextTaskDomino::ReserveDomino);
+
+        xp1 = i1;
+        xp2 = i2;
+        yp1 = j1;
+        yp2 = j2;
+        ft1 = static_cast<int>(m_clickedDomino->getFieldType1());
+        ft2 = static_cast<int>(m_clickedDomino->getFieldType2());
+        c1 = m_clickedDomino->getCrowns1();
+        c2 = m_clickedDomino->getCrowns2();
+        emit updatedTable();
+
     }
     else
         std::cout << "Ne moze ovde postavis brapooo" << std::endl;
