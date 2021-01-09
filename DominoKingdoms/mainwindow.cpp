@@ -282,13 +282,22 @@ void MainWindow::take_cards_from_deck(){
         std::cout << "dosta ste se kartali" << std::endl;
         return;
     }
+
+    std::vector<Domino *> temp;
+    temp.clear();
     if(isEmptyColumn1()){
         for(int i = 0; i < 4; i++){
             auto it = deckSet.begin();
-            firstColumnDF[i]->setDomino(*it);
+            temp.push_back(*it);
             deckSet.erase(it);
         }
+
+        std::sort(temp.begin(), temp.end(), [](Domino *d1, Domino *d2){
+            return d1->getValue() < d2->getValue();
+        });
+
         for(int i = 0; i < 4; i++){
+            firstColumnDF[i]->setDomino(temp[i]);
             firstColumnDF[i]->getDomino()->setXP1(firstColumnDF[i]->getX1());
             firstColumnDF[i]->getDomino()->setYP1(firstColumnDF[i]->getY1());
             firstColumnDF[i]->getDomino()->setXP2(firstColumnDF[i]->getX2());
@@ -307,10 +316,16 @@ void MainWindow::take_cards_from_deck(){
     else if(isEmptyColumn2()){
         for(int i = 0; i < 4; i++){
             auto it = deckSet.begin();
-            secondColumnDF[i]->setDomino(*it);
+            temp.push_back(*it);
             deckSet.erase(it);
         }
+
+        std::sort(temp.begin(), temp.end(), [](Domino *d1, Domino *d2){
+            return d1->getValue() < d2->getValue();
+        });
+
         for(int i = 0; i < 4; i++){
+            secondColumnDF[i]->setDomino(temp[i]);
             secondColumnDF[i]->getDomino()->setXP1(secondColumnDF[i]->getX1());
             secondColumnDF[i]->getDomino()->setYP1(secondColumnDF[i]->getY1());
             secondColumnDF[i]->getDomino()->setXP2(secondColumnDF[i]->getX2());

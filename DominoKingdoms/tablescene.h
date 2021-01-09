@@ -19,6 +19,21 @@ class TableScene : public QGraphicsScene
 public:
     explicit TableScene(QObject *o = 0);
 
+    struct forUpdate
+    {
+        forUpdate(Domino* d) {
+            int forUpdateX1 = d->getXP1();
+            int forUpdateY1 = d->getYP1();
+            int forUpdateX2 = d->getXP2();
+            int forUpdateY2 = d->getYP2();
+        }
+
+        int forUpdateX1;
+        int forUpdateY1;
+        int forUpdateX2;
+        int forUpdateY2;
+    };
+
     QGraphicsView *view() const;
     void setView(QGraphicsView *view);
 
@@ -39,6 +54,13 @@ public:
 
     Player *nextPlayer() const;
     void setNextPlayer(Player *nextPlayer);
+
+    void moveDominoRight(forUpdate* post);
+    void moveDominoLeft(forUpdate* post);
+    void moveDominoUp(forUpdate* post);
+    void moveDominoDown(forUpdate* post);
+    void setDominoOnTable();
+    void updateTableScene(forUpdate *pre, forUpdate *post);
 
 private:
     QGraphicsView *m_view;
