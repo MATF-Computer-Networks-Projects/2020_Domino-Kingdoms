@@ -86,7 +86,7 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             m_clickedDomino->setYP2(0);
             m_clickedDomino->changeSize(150);
             m_otherScene->addItem(m_clickedDomino);
-            m_clickedDomino->setOpacity(0.4);
+            m_clickedDomino->setOpacity(1);
             m_clickedDomino->setDominoStatus(DominoStatus::Placed);
 
             this->update(m_view->rect());
