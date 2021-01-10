@@ -16,6 +16,11 @@ public:
     const static int sending_cards = 10;
     const static int change_next_task = 11;
     const static int sending_id = 12;
+    const static int send_reserve_back = 13;
+    const static int request_color = 14;
+    const static int send_color = 15;
+    const static int request_delete = 16;
+    const static int send_delete = 17;
 };
 
 #endif // SIGNALS_H

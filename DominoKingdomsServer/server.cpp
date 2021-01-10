@@ -5,9 +5,11 @@ server::server(QObject *parent)
 {
     nextPlayersId = 0;
     currentTurn.reserve(4);
-    for(int i = 0; i < 4; i++)
-        currentTurn[i] = i+1;
     nextTurn.reserve(4);
+    for(int i = 0; i < 4; i++){
+        currentTurn[i] = i+1;
+        nextTurn[i] = i+1;
+    }
     currIndexPlayer = 0;
     playingPlayer = 1;
     beginning = true;
@@ -83,7 +85,6 @@ void server::socketReadyRead()
          QByteArray input;
         _in>>input;
         playerName = QString::fromUtf8(input);
-//        _clients[client]->set_name(input2.toStdString());
         std::cout<<"Welcome " << _clients[client]->get_name()<<std::endl;
         _clients[client]->set_name(playerName.toStdString());
 
@@ -278,73 +279,30 @@ void server::socketReadyRead()
 
         nextTurn[(row-1)%4] = pid;
 
-        auto it = _clients.begin();
-        for(it = _clients.begin(); it != _clients.end(); it++){
-            if((*it)->get_id() == playingPlayer){
-                QByteArray block;
-                QDataStream out(&block,QIODevice::WriteOnly);
-                out.setVersion(QDataStream::Qt_5_9);
-
-                out<<Signals::change_next_task << static_cast<int>(NextTaskDomino::Wait);
-
-                _clients.key((*it))->write(block);
-            }
-        }
-
         currIndexPlayer++;
-        if(currIndexPlayer > 3)
+        if(currIndexPlayer > 3){
             currIndexPlayer = 0;
+            beginning = false;
+        }
 
         playingPlayer = currentTurn[currIndexPlayer];
 
-        std::cout << "ID OTKLJUCAVA: " << playingPlayer << std::endl;
-
-        //signal do klijenta playingPlayer
-        if(beginning){
-            std::cout << "poceo naleee" << std::endl;
-            it = _clients.begin();
-            for(it = _clients.begin(); it != _clients.end(); it++){
-                if((*it)->get_id() == playingPlayer){
-                    QByteArray block;
-                    QDataStream out(&block,QIODevice::WriteOnly);
-                    out.setVersion(QDataStream::Qt_5_9);
-
-                    out<<Signals::change_next_task << static_cast<int>(NextTaskDomino::ReserveDomino);
-
-                    _clients.key((*it))->write(block);
-                }
-            }
-        }
-        else{
-
-            it = _clients.begin();
-            for(it = _clients.begin(); it != _clients.end(); it++){
-                if((*it)->get_id() == playingPlayer){
-                    QByteArray block;
-                    QDataStream out(&block,QIODevice::WriteOnly);
-                    out.setVersion(QDataStream::Qt_5_9);
-
-                    out<<Signals::change_next_task << static_cast<int>(NextTaskDomino::ChooseDomino);
-
-                    _clients.key((*it))->write(block);
-                }
-            }
-        }
-
-        it = _clients.begin();
+        auto it = _clients.begin();
         for(it = _clients.begin(); it != _clients.end(); it++){
-            if((*it)->get_id() != pid){
-                QByteArray block;
-                QDataStream out(&block,QIODevice::WriteOnly);
-                out.setVersion(QDataStream::Qt_5_9);
 
-                out<<Signals::send_reserve<<pid<<row;
+            QByteArray block;
+            QDataStream out(&block,QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_9);
+            out<<Signals::send_color;
 
-                _clients.key((*it))->write(block);
-            }
+            if(beginning)
+                out << static_cast<int>(NextTaskDomino::ReserveDomino);
+            else
+                out << static_cast<int>(NextTaskDomino::ChooseDomino);
+            out << playingPlayer << pid << row;
+
+            _clients.key((*it))->write(block);
         }
-
-
     }
 
     else if(type == Signals::request_cards){
@@ -356,7 +314,7 @@ void server::socketReadyRead()
         for(int i = 0; i < 4; i++){
             currentTurn[i] = nextTurn[i];
         }
-        beginning = false;
+
         nextTurn.clear();
         nextTurn.reserve(4);
 
@@ -391,7 +349,21 @@ void server::socketReadyRead()
 
     }
 
+    else if(type == Signals::request_delete){
+        int row;
+        _in>>row;
 
+        for(auto it = _clients.begin(); it!=_clients.end();it++){
+            QByteArray block;
+            QDataStream out(&block,QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_9);
+
+            out<<Signals::send_delete;
+            out<<row;
+            _clients.key(*it)->write(block);
+        }
+
+    }
 
     if(!_in.commitTransaction()){
         return;

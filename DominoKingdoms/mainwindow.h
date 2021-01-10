@@ -77,6 +77,8 @@ private slots:
     void recieveUpdate();
     void setDeck();
     void slotReserveDomino();
+    void slotUpdateColor();
+    void slotChosenDomino();
 
 
 private:

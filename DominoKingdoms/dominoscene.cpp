@@ -66,18 +66,17 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             return;
 
         m_clickedDomino = (*column)[index]->getDomino();
-
+        std::cout << "Stigo dovde" << std::endl;
         if(m_p1->get_nextTask() == NextTaskDomino::ChooseDomino &&
-                m_clickedDomino->getPlayer() == m_p1){
+                m_clickedDomino->getPlayer()->get_id() == m_p1->get_id()){
 
             if((m_activeColumn == 1 && id == 2) || (m_activeColumn == 2 && id == 1))
                 return;
 
-            for(int i = 0; i < 4; i++){
-                this->removeItem((*column)[i]->getDomino());
-                (*column)[i]->setDomino(nullptr);
-                (*column)[i]->setIsEmpty(true);
-            }
+            this->removeItem((*column)[index]->getDomino());
+            (*column)[index]->setDomino(nullptr);
+            (*column)[index]->setIsEmpty(true);
+
             m_otherScene->setClickedDomino(m_clickedDomino);
             m_p1->setNextTask(NextTaskDomino::PlaceDomino);
 
@@ -91,6 +90,10 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             m_clickedDomino->setDominoStatus(DominoStatus::Placed);
 
             this->update(m_view->rect());
+
+            sDominoFieldNumber = m_clickedDomino->getS_id();
+            emit signalChosenDomino();
+
         }
         else if(m_p1->get_nextTask() == NextTaskDomino::ReserveDomino){
             if(m_clickedDomino->getPlayer() != nullptr){
@@ -100,11 +103,11 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             m_p1->reserveDomino(m_clickedDomino);
             m_clickedDomino->setPlayer(m_p1);
             m_clickedDomino->setDominoStatus(DominoStatus::Reserved);
-            //m_p1->setNextTask(NextTaskDomino::ChooseDomino);
             this->update(m_view->rect());
 
             sPlayerId = m_p1->get_id();
             sDominoFieldNumber = m_clickedDomino->getS_id();
+
             emit signalReservedDomino();
         }
     }

@@ -234,6 +234,7 @@ void Player::set_id(int id){
     m_id = id;
     if(id == 1)
         this->setNextTask(NextTaskDomino::ReserveDomino);
+    std::cout << "PLAYER ID: " << m_id << std::endl;
 }
 
 void Player::set_name(const std::string &name){
