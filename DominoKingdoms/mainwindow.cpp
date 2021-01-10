@@ -276,6 +276,7 @@ void MainWindow::back_rules_clicked(){
 
 void MainWindow::back_to_game(){
     ui->stackedWidget->setCurrentIndex(4);
+    otherScene->clear();
 }
 
 void MainWindow::back_to_menu(){

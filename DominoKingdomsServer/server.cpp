@@ -147,6 +147,7 @@ void server::socketReadyRead()
 
     }
 
+
     if(!_in.commitTransaction()){
         return;
     }
