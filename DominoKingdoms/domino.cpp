@@ -86,6 +86,16 @@ void Domino::setPlayer(Player *player)
     m_player = player;
 }
 
+int Domino::getS_id() const
+{
+    return s_id;
+}
+
+void Domino::setS_id(int value)
+{
+    s_id = value;
+}
+
 Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldType2, int value, Board_Status boardStatus):
       m_xPos1(0), m_yPos1(0), m_xPos2(0), m_yPos2(0),
       m_width(100), m_height(100),
@@ -95,6 +105,7 @@ Domino::Domino(int crowns1, int crowns2, FieldType fieldType1, FieldType fieldTy
 {
     m_dominoStatus = DominoStatus::Idle;
     m_player = nullptr;
+    s_id = 0;
 }
 
 bool Domino::compatibleWith(Domino){

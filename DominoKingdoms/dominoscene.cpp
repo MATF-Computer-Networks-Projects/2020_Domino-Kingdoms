@@ -92,13 +92,19 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             this->update(m_view->rect());
         }
         else if(m_p1->get_nextTask() == NextTaskDomino::ReserveDomino){
+            if(m_clickedDomino->getPlayer() != nullptr){
+                std::cout << "rezervisano mrale" << std::endl;
+                return;
+            }
             m_p1->reserveDomino(m_clickedDomino);
             m_clickedDomino->setPlayer(m_p1);
             m_clickedDomino->setDominoStatus(DominoStatus::Reserved);
             m_p1->setNextTask(NextTaskDomino::ChooseDomino);
             this->update(m_view->rect());
-            // promeni turn
-            // m_p2->setNextTask(Choosedomino)
+
+            sPlayerId = m_p1->get_id();
+            sDominoFieldNumber = m_clickedDomino->getS_id();
+            emit signalReservedDomino();
         }
     }
 }

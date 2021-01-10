@@ -182,6 +182,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(player3button,&QPushButton::clicked,this,&MainWindow::getPlayer3Clicked);
 
     connect(tableScene, &TableScene::updatedTable, this, &MainWindow::recieveUpdate);
+    connect(dominoScene,&DominoScene::signalReservedDomino,this,&MainWindow::slotReserveDomino);
 
 }
 
@@ -235,6 +236,23 @@ void MainWindow::setDeck(){
     dominoes[45] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 46, Board_Status::InDeck);
     dominoes[46] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 47, Board_Status::InDeck);
     dominoes[47] = new Domino(0, 3, FieldType::Wheat, FieldType::Quarry, 48, Board_Status::InDeck);
+}
+
+void MainWindow::slotReserveDomino()
+{
+    //komunikacija sa serverom
+    int pid = dominoScene->sPlayerId;
+    int row = dominoScene->sDominoFieldNumber;
+
+    QByteArray block;
+    QDataStream out(&block,QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+
+    out<<Signals::send_reserve;
+    out<<pid<<row;
+
+    clientsSocket->write(block);
+
 }
 
 MainWindow::~MainWindow()
@@ -323,8 +341,9 @@ void MainWindow::take_cards_from_deck(){
             firstColumnDF[i]->getDomino()->setXP2(firstColumnDF[i]->getX2());
             firstColumnDF[i]->getDomino()->setYP2(firstColumnDF[i]->getY2());
             firstColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
-            firstColumnDF[i]->getDomino()->setPlayer(player1);
+//            firstColumnDF[i]->getDomino()->setPlayer(player1);
             dominoScene->addItem(firstColumnDF[i]->getDomino());
+            firstColumnDF[i]->getDomino()->setS_id(i+1);
             firstColumnDF[i]->setIsEmpty(false);
         }
         dominoScene->setActiveColumn(2);
@@ -351,8 +370,9 @@ void MainWindow::take_cards_from_deck(){
             secondColumnDF[i]->getDomino()->setXP2(secondColumnDF[i]->getX2());
             secondColumnDF[i]->getDomino()->setYP2(secondColumnDF[i]->getY2());
             secondColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
-            secondColumnDF[i]->getDomino()->setPlayer(player1);
+//            secondColumnDF[i]->getDomino()->setPlayer(player1);
             dominoScene->addItem(secondColumnDF[i]->getDomino());
+            secondColumnDF[i]->getDomino()->setS_id(i+5);
             secondColumnDF[i]->setIsEmpty(false);
         }
         dominoScene->setActiveColumn(1);
@@ -492,6 +512,7 @@ void MainWindow::socketReadyRead()
         otherScene->update(otherScene->view()->rect());
 
     }
+
     else if(type == Signals::player_not_found){
         std::cout<<"dobio signal player not found"<<std::endl;
         QMessageBox mb;
@@ -500,6 +521,19 @@ void MainWindow::socketReadyRead()
         mb.exec();
     }
 
+    else if(type == Signals::send_reserve){
+        int pid;
+        m_in>>pid;
+        int row;
+        m_in>>row;
+
+        if(row >= 1 && row <= 4)
+            firstColumnDF[row-1]->getDomino()->setPlayer(new Player("que",pid));
+        else if(row >= 5 && row <= 8)
+            secondColumnDF[row-5]->getDomino()->setPlayer(new Player("por",pid));
+
+        dominoScene->update(dominoScene->view()->rect());
+    }
 
     if(!m_in.commitTransaction()){
         return;

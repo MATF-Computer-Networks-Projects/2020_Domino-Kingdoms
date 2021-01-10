@@ -146,6 +146,7 @@ void server::socketReadyRead()
         client->write(block);
 
     }
+
     else if(type == Signals::request_player2){
         std::cout<<"Treba da pokazem polja playera 2"<<std::endl;
 
@@ -198,6 +199,7 @@ void server::socketReadyRead()
 
         client->write(block);
     }
+
     else if(type == Signals::request_player3){
         std::cout<<"Treba da pokazem polja playera 3"<<std::endl;
 
@@ -251,6 +253,27 @@ void server::socketReadyRead()
         client->write(block);
     }
 
+    else if(type == Signals::send_reserve){
+        int pid;
+        _in>>pid;
+        int row;
+        _in>>row;
+
+        auto it = _clients.begin();
+        for(it = _clients.begin(); it != _clients.end(); it++){
+            if((*it)->get_id() != pid){
+                QByteArray block;
+                QDataStream out(&block,QIODevice::WriteOnly);
+                out.setVersion(QDataStream::Qt_5_9);
+
+                out<<Signals::send_reserve<<pid<<row;
+
+                _clients.key((*it))->write(block);
+            }
+        }
+
+
+    }
 
     if(!_in.commitTransaction()){
         return;

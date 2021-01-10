@@ -52,6 +52,14 @@ private:
 signals:
     void signalReservedDomino();
 
+public:
+    int sPlayerId;
+//    1 5
+//    2 6
+//    3 7
+//    4 8
+    int sDominoFieldNumber;
+
 };
 
 #endif // DOMINOSCENE_H

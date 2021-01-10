@@ -10,6 +10,7 @@ public:
     const static int send_update = 4;
     const static int sending_table = 5;
     const static int player_not_found = 6;
+    const static int send_reserve = 7;
 };
 
 #endif // SIGNALS_H

@@ -17,6 +17,7 @@ private: //variables
     bool m_currentlyCompatible, m_pressed, m_held;
     Board_Status m_boardStatus;
     FieldType m_fieldType1, m_fieldType2;
+    int s_id;
 
 public: //methods
     Domino(int crowns1, int crowns2,FieldType fieldType1, FieldType fieldType2, int value, Board_Status boardStatus);
@@ -63,6 +64,9 @@ public: //methods
 
     Player *getPlayer() const;
     void setPlayer(Player *player);
+
+    int getS_id() const;
+    void setS_id(int value);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
