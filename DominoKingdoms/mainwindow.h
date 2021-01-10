@@ -77,6 +77,8 @@ private slots:
     void recieveUpdate();
     void setDeck();
     void slotReserveDomino();
+    void slotUpdateColor();
+    void slotChosenDomino();
 
 
 private:
@@ -88,6 +90,7 @@ private:
     QDataStream m_in;
     QString playerName;
     Domino* dominoes[48];
+    int m_idOnServer;
 
 };
 

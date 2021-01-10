@@ -51,6 +51,8 @@ private:
 
 signals:
     void signalReservedDomino();
+    void signalChosenDomino();
+    void updateColor();
 
 public:
     int sPlayerId;

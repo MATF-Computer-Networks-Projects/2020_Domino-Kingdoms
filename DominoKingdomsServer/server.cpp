@@ -4,6 +4,15 @@
 server::server(QObject *parent)
 {
     nextPlayersId = 0;
+    currentTurn.reserve(4);
+    nextTurn.reserve(4);
+    for(int i = 0; i < 4; i++){
+        currentTurn[i] = i+1;
+        nextTurn[i] = i+1;
+    }
+    currIndexPlayer = 0;
+    playingPlayer = 1;
+    beginning = true;
 }
 
 server::~server()
@@ -33,18 +42,17 @@ void server::startServer()
 void server::newClientConnection()
 {
     QTcpSocket *client = _server->nextPendingConnection();
+    Player *player = new Player("playerName",++nextPlayersId);
+    std::cout<<"cnext players id "<< nextPlayersId<<std::endl;
+
+    _clients.insert(client, player);
+
     QString ipAddr = client->peerAddress().toString();
     int port = client->peerPort();
 
     connect(client, &QTcpSocket::disconnected, this, &server::socketDisconnected);
     connect(client, &QTcpSocket::readyRead, this, &server::socketReadyRead);
     connect(client, &QTcpSocket::stateChanged, this, &server::socketStateChanged);
-
-//    Player *player = new Player("",++nextPlayersId);
-
-    Player *player = new Player(std::string("marija"),++nextPlayersId);
-
-    _clients.insert(client, player);
 
     qDebug()<<"Socket connected from " + ipAddr + " : " + QString::number(port);
 }
@@ -76,9 +84,16 @@ void server::socketReadyRead()
     if(type == Signals::send_name){
          QByteArray input;
         _in>>input;
-        QString input2 = QString::fromUtf8(input);
-        _clients[client]->set_name(input2.toStdString());
+        playerName = QString::fromUtf8(input);
         std::cout<<"Welcome " << _clients[client]->get_name()<<std::endl;
+        _clients[client]->set_name(playerName.toStdString());
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_9);
+        out<<(int)Signals::sending_id<<(int)_clients[client]->get_id();
+
+        client->write(block);
     }
 
     else if(type == Signals::send_update){
@@ -262,20 +277,32 @@ void server::socketReadyRead()
         int row;
         _in>>row;
 
-        auto it = _clients.begin();
-        for(it = _clients.begin(); it != _clients.end(); it++){
-            if((*it)->get_id() != pid){
-                QByteArray block;
-                QDataStream out(&block,QIODevice::WriteOnly);
-                out.setVersion(QDataStream::Qt_5_9);
+        nextTurn[(row-1)%4] = pid;
 
-                out<<Signals::send_reserve<<pid<<row;
-
-                _clients.key((*it))->write(block);
-            }
+        currIndexPlayer++;
+        if(currIndexPlayer > 3){
+            currIndexPlayer = 0;
+            beginning = false;
         }
 
+        playingPlayer = currentTurn[currIndexPlayer];
 
+        auto it = _clients.begin();
+        for(it = _clients.begin(); it != _clients.end(); it++){
+
+            QByteArray block;
+            QDataStream out(&block,QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_9);
+            out<<Signals::send_color;
+
+            if(beginning)
+                out << static_cast<int>(NextTaskDomino::ReserveDomino);
+            else
+                out << static_cast<int>(NextTaskDomino::ChooseDomino);
+            out << playingPlayer << pid << row;
+
+            _clients.key((*it))->write(block);
+        }
     }
 
     else if(type == Signals::request_cards){
@@ -283,6 +310,13 @@ void server::socketReadyRead()
             std::cout << "dosta ste se kartali" << std::endl;
             return;
         }
+
+        for(int i = 0; i < 4; i++){
+            currentTurn[i] = nextTurn[i];
+        }
+
+        nextTurn.clear();
+        nextTurn.reserve(4);
 
         std::vector<Domino *> temp;
         temp.clear();
@@ -315,7 +349,21 @@ void server::socketReadyRead()
 
     }
 
+    else if(type == Signals::request_delete){
+        int row;
+        _in>>row;
 
+        for(auto it = _clients.begin(); it!=_clients.end();it++){
+            QByteArray block;
+            QDataStream out(&block,QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_9);
+
+            out<<Signals::send_delete;
+            out<<row;
+            _clients.key(*it)->write(block);
+        }
+
+    }
 
     if(!_in.commitTransaction()){
         return;
