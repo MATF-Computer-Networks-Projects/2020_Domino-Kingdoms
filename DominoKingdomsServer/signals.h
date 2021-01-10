@@ -11,6 +11,9 @@ public:
     const static int sending_table = 5;
     const static int player_not_found = 6;
     const static int send_reserve = 7;
+    const static int request_cards = 8;
+    const static int game_ended = 9;
+    const static int sending_cards = 10;
 };
 
 #endif // SIGNALS_H

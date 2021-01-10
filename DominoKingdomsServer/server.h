@@ -13,6 +13,7 @@
 #include <string>
 #include <QString>
 #include <iostream>
+#include <vector>
 
 #include "signals.h"
 #include "../DominoKingdoms/player.hpp"
@@ -27,6 +28,7 @@ public:
     explicit server(QObject *parent = 0);
     ~server();
     void startServer();
+    void setDeck();
 
 public slots:
     void newClientConnection();
@@ -39,6 +41,8 @@ private:
     QTcpServer *_server;
     QMap <QTcpSocket*, Player*> _clients;
     QDataStream _in;
+
+    std::vector<Domino*> dominoes;
 
 public:
     int nextPlayersId;

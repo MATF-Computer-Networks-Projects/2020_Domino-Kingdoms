@@ -2,7 +2,7 @@
 
 
 int backIndex = 0;
-Domino* dominoes[48];
+//Domino* dominoes[48];
 QSet<Domino*> deckSet;
 std::vector<DominoField*> firstColumnDF;
 std::vector<DominoField*> secondColumnDF;
@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
+    setDeck();
     m_connected = false;
 
     ui->setupUi(this);
@@ -97,14 +98,8 @@ MainWindow::MainWindow(QWidget *parent) :
     otherScene->update(otherView->rect());
 
 
-
-    /* Initializing Dominoes */
-    setDeck();
-
-    std::random_shuffle(std::begin(dominoes), std::end(dominoes));
-
-    for(int i = 0; i < 48; i++)
-        deckSet.insert(dominoes[i]);
+//    for(int i = 0; i < 48; i++)
+//        deckSet.insert(dominoes[i]);
 
     /* Initializing domino fields */
     for(int i = 0; i < 4; i++)
@@ -186,7 +181,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
-void MainWindow::setDeck(){
+void MainWindow::slotReserveDomino()
+{
+    //komunikacija sa serverom
+    int pid = dominoScene->sPlayerId;
+    int row = dominoScene->sDominoFieldNumber;
+
+    QByteArray block;
+    QDataStream out(&block,QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+
+    out<<Signals::send_reserve;
+    out<<pid<<row;
+
+    clientsSocket->write(block);
+
+}
+
+void MainWindow::setDeck()
+{
     /* Initializing Dominoes */
     dominoes[0] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck);
     dominoes[1] = new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 2, Board_Status::InDeck);
@@ -236,23 +249,6 @@ void MainWindow::setDeck(){
     dominoes[45] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 46, Board_Status::InDeck);
     dominoes[46] = new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 47, Board_Status::InDeck);
     dominoes[47] = new Domino(0, 3, FieldType::Wheat, FieldType::Quarry, 48, Board_Status::InDeck);
-}
-
-void MainWindow::slotReserveDomino()
-{
-    //komunikacija sa serverom
-    int pid = dominoScene->sPlayerId;
-    int row = dominoScene->sDominoFieldNumber;
-
-    QByteArray block;
-    QDataStream out(&block,QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_9);
-
-    out<<Signals::send_reserve;
-    out<<pid<<row;
-
-    clientsSocket->write(block);
-
 }
 
 MainWindow::~MainWindow()
@@ -316,81 +312,98 @@ bool isEmptyColumn2(){
 }
 
 void MainWindow::take_cards_from_deck(){
-    if(deckSet.size() <= 0){
-        std::cout << "dosta ste se kartali" << std::endl;
-        return;
+
+    if(!isEmptyColumn1() && !isEmptyColumn2()){
+        QMessageBox qmb;
+        qmb.setText("Ne moze bez kabla");
+        qmb.exec();
     }
 
-    std::vector<Domino *> temp;
-    temp.clear();
-    if(isEmptyColumn1()){
-        for(int i = 0; i < 4; i++){
-            auto it = deckSet.begin();
-            temp.push_back(*it);
-            deckSet.erase(it);
-        }
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+    out<<Signals::request_cards;
 
-        std::sort(temp.begin(), temp.end(), [](Domino *d1, Domino *d2){
-            return d1->getValue() < d2->getValue();
-        });
+    clientsSocket->write(block);
 
-        for(int i = 0; i < 4; i++){
-            firstColumnDF[i]->setDomino(temp[i]);
-            firstColumnDF[i]->getDomino()->setXP1(firstColumnDF[i]->getX1());
-            firstColumnDF[i]->getDomino()->setYP1(firstColumnDF[i]->getY1());
-            firstColumnDF[i]->getDomino()->setXP2(firstColumnDF[i]->getX2());
-            firstColumnDF[i]->getDomino()->setYP2(firstColumnDF[i]->getY2());
-            firstColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
-//            firstColumnDF[i]->getDomino()->setPlayer(player1);
-            dominoScene->addItem(firstColumnDF[i]->getDomino());
-            firstColumnDF[i]->getDomino()->setS_id(i+1);
-            firstColumnDF[i]->setIsEmpty(false);
-        }
-        dominoScene->setActiveColumn(2);
-        if(!firstTime1){
-            game->setupQueue(secondColumnDF);
-            firstTime1 = false;
-        }
-    }
-    else if(isEmptyColumn2()){
-        for(int i = 0; i < 4; i++){
-            auto it = deckSet.begin();
-            temp.push_back(*it);
-            deckSet.erase(it);
-        }
+//    if(deckSet.size() <= 0){
+//        std::cout << "dosta ste se kartali" << std::endl;
+//        return;
+//    }
 
-        std::sort(temp.begin(), temp.end(), [](Domino *d1, Domino *d2){
-            return d1->getValue() < d2->getValue();
-        });
+//    std::vector<Domino *> temp;
+//    temp.clear();
+//    if(isEmptyColumn1()){
+//        for(int i = 0; i < 4; i++){
+//            auto it = deckSet.begin();
+//            temp.push_back(*it);
+//            deckSet.erase(it);
+//        }
 
-        for(int i = 0; i < 4; i++){
-            secondColumnDF[i]->setDomino(temp[i]);
-            secondColumnDF[i]->getDomino()->setXP1(secondColumnDF[i]->getX1());
-            secondColumnDF[i]->getDomino()->setYP1(secondColumnDF[i]->getY1());
-            secondColumnDF[i]->getDomino()->setXP2(secondColumnDF[i]->getX2());
-            secondColumnDF[i]->getDomino()->setYP2(secondColumnDF[i]->getY2());
-            secondColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
-//            secondColumnDF[i]->getDomino()->setPlayer(player1);
-            dominoScene->addItem(secondColumnDF[i]->getDomino());
-            secondColumnDF[i]->getDomino()->setS_id(i+5);
-            secondColumnDF[i]->setIsEmpty(false);
-        }
-        dominoScene->setActiveColumn(1);
-        if(!firstTime2){
-            game->setupQueue(firstColumnDF);
-            firstTime2 = false;
-        }
-    }
-    else{
-        std::cout << "Ne mozes da delis karte sad" << std::endl;
-        return;
-    }
+//        std::sort(temp.begin(), temp.end(), [](Domino *d1, Domino *d2){
+//            return d1->getValue() < d2->getValue();
+//        });
 
-    dominoScene->update(dominoView->rect());
+//        for(int i = 0; i < 4; i++){
+//            firstColumnDF[i]->setDomino(temp[i]);
+//            firstColumnDF[i]->getDomino()->setXP1(firstColumnDF[i]->getX1());
+//            firstColumnDF[i]->getDomino()->setYP1(firstColumnDF[i]->getY1());
+//            firstColumnDF[i]->getDomino()->setXP2(firstColumnDF[i]->getX2());
+//            firstColumnDF[i]->getDomino()->setYP2(firstColumnDF[i]->getY2());
+//            firstColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+////            firstColumnDF[i]->getDomino()->setPlayer(player1);
+//            dominoScene->addItem(firstColumnDF[i]->getDomino());
+//            firstColumnDF[i]->getDomino()->setS_id(i+1);
+//            firstColumnDF[i]->setIsEmpty(false);
+//        }
+//        dominoScene->setActiveColumn(2);
+//        if(!firstTime1){
+//            game->setupQueue(secondColumnDF);
+//            firstTime1 = false;
+//        }
+//    }
+//    temp.clear();
+//    if(isEmptyColumn2()){
+//        for(int i = 0; i < 4; i++){
+//            auto it = deckSet.begin();
+//            temp.push_back(*it);
+//            deckSet.erase(it);
+//        }
+
+//        std::sort(temp.begin(), temp.end(), [](Domino *d1, Domino *d2){
+//            return d1->getValue() < d2->getValue();
+//        });
+
+//        for(int i = 0; i < 4; i++){
+//            secondColumnDF[i]->setDomino(temp[i]);
+//            secondColumnDF[i]->getDomino()->setXP1(secondColumnDF[i]->getX1());
+//            secondColumnDF[i]->getDomino()->setYP1(secondColumnDF[i]->getY1());
+//            secondColumnDF[i]->getDomino()->setXP2(secondColumnDF[i]->getX2());
+//            secondColumnDF[i]->getDomino()->setYP2(secondColumnDF[i]->getY2());
+//            secondColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+////            secondColumnDF[i]->getDomino()->setPlayer(player1);
+//            dominoScene->addItem(secondColumnDF[i]->getDomino());
+//            secondColumnDF[i]->getDomino()->setS_id(i+5);
+//            secondColumnDF[i]->setIsEmpty(false);
+//        }
+//        dominoScene->setActiveColumn(1);
+//        if(!firstTime2){
+//            game->setupQueue(firstColumnDF);
+//            firstTime2 = false;
+//        }
+//    }
+//    if(!isEmptyColumn1() && !isEmptyColumn2()){
+//        std::cout << "Ne mozes da delis karte sad" << std::endl;
+//        return;
+//    }
+
+//    dominoScene->update(dominoView->rect());
 }
 
 void MainWindow::throw_out_domino_clicked()
 {
+    if(tableScene->clickedDomino()->opacity() == 0.4)
+        return;
     tableScene->removeItem(tableScene->clickedDomino());
     tableScene->clickedDomino()->hide();
     tableScene->setClickedDomino(nullptr);
@@ -531,6 +544,44 @@ void MainWindow::socketReadyRead()
             firstColumnDF[row-1]->getDomino()->setPlayer(new Player("que",pid));
         else if(row >= 5 && row <= 8)
             secondColumnDF[row-5]->getDomino()->setPlayer(new Player("por",pid));
+
+        dominoScene->update(dominoScene->view()->rect());
+    }
+
+    else if(type == Signals::sending_cards){
+
+        int value[4];
+        for(int i = 0; i < 4; i++)
+            m_in >> value[i];
+
+        if(isEmptyColumn1()){
+            for(int i = 0; i < 4; i++){
+                firstColumnDF[i]->setDomino(dominoes[value[i]]);
+                firstColumnDF[i]->getDomino()->setXP1(firstColumnDF[i]->getX1());
+                firstColumnDF[i]->getDomino()->setYP1(firstColumnDF[i]->getY1());
+                firstColumnDF[i]->getDomino()->setXP2(firstColumnDF[i]->getX2());
+                firstColumnDF[i]->getDomino()->setYP2(firstColumnDF[i]->getY2());
+                firstColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+                dominoScene->addItem(firstColumnDF[i]->getDomino());
+                firstColumnDF[i]->getDomino()->setS_id(i+1);
+                firstColumnDF[i]->setIsEmpty(false);
+            }
+            dominoScene->setActiveColumn(2);
+        }
+        else if(isEmptyColumn2()){
+            for(int i = 0; i < 4; i++){
+                secondColumnDF[i]->setDomino(dominoes[value[i]]);
+                secondColumnDF[i]->getDomino()->setXP1(secondColumnDF[i]->getX1());
+                secondColumnDF[i]->getDomino()->setYP1(secondColumnDF[i]->getY1());
+                secondColumnDF[i]->getDomino()->setXP2(secondColumnDF[i]->getX2());
+                secondColumnDF[i]->getDomino()->setYP2(secondColumnDF[i]->getY2());
+                secondColumnDF[i]->getDomino()->setBoardStatus(Board_Status::OnBoard);
+                dominoScene->addItem(secondColumnDF[i]->getDomino());
+                secondColumnDF[i]->getDomino()->setS_id(i+1);
+                secondColumnDF[i]->setIsEmpty(false);
+            }
+            dominoScene->setActiveColumn(1);
+        }
 
         dominoScene->update(dominoScene->view()->rect());
     }

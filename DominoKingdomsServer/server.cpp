@@ -21,11 +21,14 @@ void server::startServer()
 
     if(_server->listen(QHostAddress::Any,8001)){
         qDebug()<<"Server has started listening to port 8001";
+        setDeck();
+
     }
     else{
         qDebug()<<"Server failed to start!";
     }
 }
+
 
 void server::newClientConnection()
 {
@@ -275,6 +278,45 @@ void server::socketReadyRead()
 
     }
 
+    else if(type == Signals::request_cards){
+        if(dominoes.size() <= 0){
+            std::cout << "dosta ste se kartali" << std::endl;
+            return;
+        }
+
+        std::vector<Domino *> temp;
+        temp.clear();
+
+        for(int i = 0; i < 4; i++){
+            auto it = dominoes.back();
+            temp.push_back(it);
+            dominoes.pop_back();
+        }
+
+        std::sort(temp.begin(), temp.end(), [](Domino *d1, Domino *d2){
+            return d1->getValue() < d2->getValue();
+        });
+
+        auto it = _clients.begin();
+        for(it = _clients.begin(); it != _clients.end(); it++){
+
+            QByteArray block;
+            QDataStream out(&block,QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_9);
+
+            out<<Signals::sending_cards;
+
+            for(int i = 0; i < 4; i++){
+                out << temp[i]->getValue()-1;
+            }
+
+            _clients.key((*it))->write(block);
+        }
+
+    }
+
+
+
     if(!_in.commitTransaction()){
         return;
     }
@@ -307,4 +349,58 @@ void server::socketStateChanged(QAbstractSocket::SocketState state)
         desc = "For internal use only.";
 
     qDebug() <<"Socket state changed (" + socketIpAdress+  ":" + QString::number(port)+ ")" + desc;
+}
+
+void server::setDeck(){
+    /* Initializing Dominoes */
+    dominoes.push_back(new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 1, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Wheat, FieldType::Wheat, 2, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Forest, FieldType::Forest, 3, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Forest, FieldType::Forest, 4, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Forest, FieldType::Forest, 5, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Forest, FieldType::Forest, 6, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Water, FieldType::Water, 7, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Water, FieldType::Water, 8, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Water, FieldType::Water, 9, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Meadow, FieldType::Meadow, 10, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Meadow, FieldType::Meadow, 11, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Swamp, FieldType::Swamp, 12, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Wheat, FieldType::Forest, 13, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Wheat, FieldType::Water, 14, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Wheat, FieldType::Meadow, 15, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Wheat, FieldType::Swamp, 16, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Forest, FieldType::Water, 17, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 0, FieldType::Forest, FieldType::Meadow, 18, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Wheat, FieldType::Forest, 19, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Wheat, FieldType::Water, 20, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Wheat, FieldType::Meadow, 21, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Wheat, FieldType::Swamp, 22, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Wheat, FieldType::Quarry, 23, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 24, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 25, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 26, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Forest, FieldType::Wheat, 27, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Forest, FieldType::Water, 28, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Forest, FieldType::Meadow, 29, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Water, FieldType::Wheat, 30, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Water, FieldType::Wheat, 31, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Water, FieldType::Forest, 32, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Water, FieldType::Forest, 33, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Water, FieldType::Forest, 34, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Water, FieldType::Forest, 35, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 1, FieldType::Wheat, FieldType::Meadow, 36, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 1, FieldType::Water, FieldType::Meadow, 37, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 1, FieldType::Wheat, FieldType::Swamp, 38, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 1, FieldType::Meadow, FieldType::Swamp, 39, Board_Status::InDeck));
+    dominoes.push_back(new Domino(1, 0, FieldType::Quarry, FieldType::Wheat, 40, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 2, FieldType::Wheat, FieldType::Meadow, 41, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 2, FieldType::Water, FieldType::Meadow, 42, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 2, FieldType::Wheat, FieldType::Swamp, 43, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 2, FieldType::Meadow, FieldType::Swamp, 44, Board_Status::InDeck));
+    dominoes.push_back(new Domino(2, 0, FieldType::Quarry, FieldType::Wheat, 45, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 46, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 47, Board_Status::InDeck));
+    dominoes.push_back(new Domino(0, 3, FieldType::Wheat, FieldType::Quarry, 48, Board_Status::InDeck));
+
+    std::random_shuffle(std::begin(dominoes), std::end(dominoes));
 }
