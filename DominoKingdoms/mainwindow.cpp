@@ -463,7 +463,7 @@ void MainWindow::joinServerClicked()
     connect(clientsSocket,SIGNAL(disconnected()),this,SLOT(socketDisconnected()));
     connect(clientsSocket,SIGNAL(readyRead()),this,SLOT(socketReadyRead()));
 
-    clientsSocket->connectToHost("127.0.0.1",8001);
+    clientsSocket->connectToHost("192.168.1.15",8001);
 
 }
 
