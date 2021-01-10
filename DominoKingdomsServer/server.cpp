@@ -402,5 +402,6 @@ void server::setDeck(){
     dominoes.push_back(new Domino(0, 2, FieldType::Swamp, FieldType::Quarry, 47, Board_Status::InDeck));
     dominoes.push_back(new Domino(0, 3, FieldType::Wheat, FieldType::Quarry, 48, Board_Status::InDeck));
 
+    std::srand(unsigned(std::time(0)));
     std::random_shuffle(std::begin(dominoes), std::end(dominoes));
 }

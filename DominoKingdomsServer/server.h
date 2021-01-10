@@ -14,6 +14,8 @@
 #include <QString>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <ctime>
 
 #include "signals.h"
 #include "../DominoKingdoms/player.hpp"
