@@ -400,12 +400,26 @@ void MainWindow::getPlayer1Clicked()
 
 void MainWindow::getPlayer2Clicked()
 {
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+    out<<Signals::request_player2;
+
+    clientsSocket->write(block);
+
     backIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(6);
 }
 
 void MainWindow::getPlayer3Clicked()
 {
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+    out<<Signals::request_player3;
+
+    clientsSocket->write(block);
+
     backIndex = ui->stackedWidget->currentIndex();
     ui->stackedWidget->setCurrentIndex(6);
 }

@@ -49,6 +49,9 @@ private:
     TableScene *m_otherScene;
     int m_activeColumn;
 
+signals:
+    void signalReservedDomino();
+
 };
 
 #endif // DOMINOSCENE_H

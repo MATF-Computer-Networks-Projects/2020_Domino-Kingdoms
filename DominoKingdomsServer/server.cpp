@@ -146,6 +146,110 @@ void server::socketReadyRead()
         client->write(block);
 
     }
+    else if(type == Signals::request_player2){
+        std::cout<<"Treba da pokazem polja playera 2"<<std::endl;
+
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_9);
+
+        Player *p = _clients[client];
+
+        int counter = 0;
+        bool found = false;
+        auto it = _clients.begin();
+        for(it = _clients.begin(); it != _clients.end(); it++){
+            if((*it)->get_id() != p->get_id()){
+                counter++;
+                if(counter == 2){
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if(!found){
+            std::cout<<"Player not found"<<std::endl;
+            out<<Signals::player_not_found;
+            client->write(block);
+            return;
+        }
+        std::cout<<"Player found!"<<std::endl;
+
+        int nxp1;
+        int nyp1;
+        int nft1;
+        int nc1;
+
+        out<<Signals::sending_table;
+
+        for(int i = 0;i<5;i++){
+            for(int j = 0;j<5;j++){
+
+
+                nxp1 = i;
+                nyp1 = j;
+                nft1 = static_cast<int>( (*it)->get_playerTableField(i,j).get_fType());
+                nc1 =  (*it)->get_playerTableField(i,j).get_crownsNumber();
+
+                out<<nxp1<<nyp1<<nft1<<nc1;
+            }
+        }
+
+        client->write(block);
+    }
+    else if(type == Signals::request_player3){
+        std::cout<<"Treba da pokazem polja playera 3"<<std::endl;
+
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_9);
+
+        Player *p = _clients[client];
+
+        int counter = 0;
+        bool found = false;
+        auto it = _clients.begin();
+        for(it = _clients.begin(); it != _clients.end(); it++){
+            if((*it)->get_id() != p->get_id()){
+                counter++;
+                if(counter == 3){
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if(!found){
+            std::cout<<"Player not found"<<std::endl;
+            out<<Signals::player_not_found;
+            client->write(block);
+            return;
+        }
+        std::cout<<"Player found!"<<std::endl;
+
+        int nxp1;
+        int nyp1;
+        int nft1;
+        int nc1;
+
+        out<<Signals::sending_table;
+
+        for(int i = 0;i<5;i++){
+            for(int j = 0;j<5;j++){
+
+
+                nxp1 = i;
+                nyp1 = j;
+                nft1 = static_cast<int>( (*it)->get_playerTableField(i,j).get_fType());
+                nc1 =  (*it)->get_playerTableField(i,j).get_crownsNumber();
+
+                out<<nxp1<<nyp1<<nft1<<nc1;
+            }
+        }
+
+        client->write(block);
+    }
 
 
     if(!_in.commitTransaction()){
