@@ -88,6 +88,7 @@ private:
     QDataStream m_in;
     QString playerName;
     Domino* dominoes[48];
+    int m_idOnServer;
 
 };
 

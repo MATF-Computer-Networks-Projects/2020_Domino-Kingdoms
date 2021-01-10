@@ -45,6 +45,15 @@ private:
     QDataStream _in;
 
     std::vector<Domino*> dominoes;
+    std::vector<int> currentTurn;
+    std::vector<int> nextTurn;
+
+    int currIndexPlayer;
+
+    int playingPlayer;
+    QString playerName;
+
+    bool beginning;
 
 public:
     int nextPlayersId;

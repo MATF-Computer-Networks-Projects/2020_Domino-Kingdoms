@@ -22,6 +22,7 @@ private: //variables
     NextTaskDomino m_nextTask;
     std::vector<std::vector<Field>> m_playerTable;
     QColor color;
+    int m_currPlayer;
 
 public: //methods
 

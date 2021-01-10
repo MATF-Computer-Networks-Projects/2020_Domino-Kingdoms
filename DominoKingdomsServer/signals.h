@@ -14,6 +14,8 @@ public:
     const static int request_cards = 8;
     const static int game_ended = 9;
     const static int sending_cards = 10;
+    const static int change_next_task = 11;
+    const static int sending_id = 12;
 };
 
 #endif // SIGNALS_H

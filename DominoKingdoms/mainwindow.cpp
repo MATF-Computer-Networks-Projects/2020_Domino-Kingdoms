@@ -291,6 +291,9 @@ void MainWindow::back_rules_clicked(){
 void MainWindow::back_to_game(){
     ui->stackedWidget->setCurrentIndex(4);
     otherScene->clear();
+    for(int i = 0; i < 5; i++)
+        for(int j = 0; j < 5; j++)
+            otherScene->addRect(100*i, 100*j, 100, 100);
 }
 
 void MainWindow::back_to_menu(){
@@ -315,7 +318,7 @@ void MainWindow::take_cards_from_deck(){
 
     if(!isEmptyColumn1() && !isEmptyColumn2()){
         QMessageBox qmb;
-        qmb.setText("Ne moze bez kabla");
+        qmb.setText("Ne mere bez kabla");
         qmb.exec();
     }
 
@@ -476,7 +479,7 @@ void MainWindow::joinServerClicked()
     connect(clientsSocket,SIGNAL(disconnected()),this,SLOT(socketDisconnected()));
     connect(clientsSocket,SIGNAL(readyRead()),this,SLOT(socketReadyRead()));
 
-    clientsSocket->connectToHost("192.168.1.15",8001);
+    clientsSocket->connectToHost("192.168.1.116",8001);
 
 }
 
@@ -584,6 +587,19 @@ void MainWindow::socketReadyRead()
         }
 
         dominoScene->update(dominoScene->view()->rect());
+    }
+
+    else if(type == Signals::sending_id){
+        int newId;
+        m_in>>newId;
+        m_idOnServer = newId;
+        player1->set_id(newId);
+    }
+
+    else if(type == Signals::change_next_task){
+        int input;
+        m_in >> input;
+        player1->setNextTask((NextTaskDomino)input);
     }
 
     if(!m_in.commitTransaction()){

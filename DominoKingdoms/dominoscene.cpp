@@ -47,6 +47,7 @@ void DominoScene::setSecondRow(std::vector<DominoField *> *secondRow)
 }
 
 void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
+    std::cout << static_cast<int>(m_p1->get_nextTask()) << std::endl;
     if (mouseEvent->button() == Qt::LeftButton)
     {
         int x = mouseEvent->scenePos().x();
@@ -99,7 +100,7 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             m_p1->reserveDomino(m_clickedDomino);
             m_clickedDomino->setPlayer(m_p1);
             m_clickedDomino->setDominoStatus(DominoStatus::Reserved);
-            m_p1->setNextTask(NextTaskDomino::ChooseDomino);
+            //m_p1->setNextTask(NextTaskDomino::ChooseDomino);
             this->update(m_view->rect());
 
             sPlayerId = m_p1->get_id();

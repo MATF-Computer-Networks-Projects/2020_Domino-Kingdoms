@@ -29,7 +29,8 @@ enum class DominoPosition{
 enum class NextTaskDomino{
     ChooseDomino,
     PlaceDomino,
-    ReserveDomino
+    ReserveDomino,
+    Wait
 };
 
 enum class DominoStatus{

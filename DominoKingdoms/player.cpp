@@ -146,15 +146,15 @@ int Player::calculatePoints()
 
 Player::Player(std::string name, int id):
     m_name(name), m_id(id){
-    if(id<0 || id >4){
-        throw "Incorrect player id";
-    }
 
     m_playerTable.resize(tableFields);
     for(int i=0; i<tableFields; i++)
         m_playerTable[i].resize(tableFields,Field(FieldType::Empty,0));
     m_playerTable[tableFields/2][tableFields/2] = Field(FieldType::Castle,0);
-    m_nextTask = NextTaskDomino::ReserveDomino;
+    if(id != 0)
+        m_nextTask = NextTaskDomino::Wait;
+    else
+        m_nextTask = NextTaskDomino::ReserveDomino;
     switch (id) {
     case 1:
         color = Qt::red;
@@ -232,6 +232,8 @@ QString Player::NextTaskDomino1(NextTaskDomino ntd){
 
 void Player::set_id(int id){
     m_id = id;
+    if(id == 1)
+        this->setNextTask(NextTaskDomino::ReserveDomino);
 }
 
 void Player::set_name(const std::string &name){
