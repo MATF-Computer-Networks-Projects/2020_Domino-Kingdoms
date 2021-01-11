@@ -16,6 +16,7 @@ Player *player1;
 Game *game;
 
 QPushButton *ime;
+QLabel *lblNextTask;
 
 QGraphicsView *otherView;
 
@@ -33,6 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
+    //ui->pbJoin->setEnabled(false);
+
+
+    canJoin = false;
+    ipAddress == "";
     m_counterTurns = 0;
     setDeck();
     m_connected = false;
@@ -54,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *throwOutButton = initializeButton("Throw Out");
     QPushButton *calculateButton = initializeButton("Calculate");
     ime = initializeButton("x");
+    lblNextTask = new QLabel("label");
     QPushButton *deckButton = initializeButton("Deck");
     QPushButton *optionsButton = initializeButton("Options");
     QPushButton *quitButton = initializeButton("Quit");
@@ -143,6 +150,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainScreenLayout->addWidget(throwOutButton, 11, 3, 2, 1);
     mainScreenLayout->addWidget(calculateButton, 11, 4, 2, 1);
     mainScreenLayout->addWidget(ime, 11, 5, 2, 1);
+    mainScreenLayout->addWidget(lblNextTask,11,6,2,1);
     mainScreenLayout->addWidget(deckButton, 0, 9, 1, 1);
     mainScreenLayout->addWidget(optionsButton, 11, 9, 1, 1);
     mainScreenLayout->addWidget(quitButton, 12, 9, 1, 1);
@@ -233,6 +241,26 @@ void MainWindow::slotChosenDomino()
     clientsSocket->write(block);
 }
 
+void MainWindow::refreshTaskLabel(NextTaskDomino ntd)
+{
+    std::cout<<"Udje u refresh."<<std::endl;
+    QString newMsg;
+    if(ntd == NextTaskDomino::Wait){
+        newMsg = "It's not your turn";
+    }
+    else if(ntd == NextTaskDomino::ChooseDomino){
+        newMsg = "It's your turn.\nChoose reserved domino";
+    }
+    else if(ntd == NextTaskDomino::PlaceDomino){
+        newMsg = "It's your turn.\nPlace reserved domino";
+    }
+    else if(ntd == NextTaskDomino::ReserveDomino){
+        newMsg = "It's your turn.\nPlace domino";
+    }
+    lblNextTask->setText(newMsg);
+
+}
+
 void MainWindow::setDeck()
 {
     /* Initializing Dominoes */
@@ -310,9 +338,26 @@ void MainWindow::exitButton_clicked(){
 }
 
 void MainWindow::startLoginButton_clicked(){
-    backIndex = ui->stackedWidget->currentIndex();
-    ui->stackedWidget->setCurrentIndex(4);
-    this->showFullScreen();
+    //ui->pbJoin->setEnabled(true);
+    canJoin = true;
+
+    system("gnome-terminal -x sh -c './../DominoKingdomsServer/build/DominoKingdomsServer '");
+
+    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+    // use the first non-localhost IPv4 address
+    for (int i = 0; i < ipAddressesList.size(); ++i) {
+        if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
+            ipAddressesList.at(i).toIPv4Address()) {
+            ipAddress = ipAddressesList.at(i).toString();
+            break;
+        }
+    }
+    // if we did not find one, use IPv4 localhost
+    if (ipAddress.isEmpty())
+        ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+    ui->lblNetConfig->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n")
+                         .arg(ipAddress).arg("8001"));
+
 }
 
 void MainWindow::rulesOptionsButton_clicked(){
@@ -452,11 +497,36 @@ void MainWindow::getPlayer3Clicked()
 
 void MainWindow::joinServerClicked()
 {
+//    if(!canJoin){
+//        return;
+//    }
+
     playerName = ui->leName->text();
+    insertedPort = ui->lePort->text();
+    insertedIpAddress = ui->leIpAddress->text();
     if(playerName == ""){
         ui->leName->setPlaceholderText("Provide a name");
         return;
     }
+    if(insertedPort == ""){
+        ui->lePort->setPlaceholderText("Provide port no");
+        return;
+    }
+    if(insertedIpAddress == ""){
+        ui->leIpAddress->setPlaceholderText("Provide IP Address");
+        return;
+    }
+    if(insertedPort != "8001"){
+        ui->lePort->clear();
+        ui->lePort->setPlaceholderText("Incorrect port");
+        return;
+    }
+    if(insertedIpAddress != ipAddress && ipAddress != ""){
+        ui->leIpAddress->clear();
+        ui->leIpAddress->setPlaceholderText("Incorrect IP Address");
+        return;
+    }
+
     ime->setText(playerName);
 
     backIndex = ui->stackedWidget->currentIndex();
@@ -470,7 +540,7 @@ void MainWindow::joinServerClicked()
     connect(clientsSocket,SIGNAL(disconnected()),this,SLOT(socketDisconnected()));
     connect(clientsSocket,SIGNAL(readyRead()),this,SLOT(socketReadyRead()));
 
-    clientsSocket->connectToHost("192.168.1.116",8001);
+    clientsSocket->connectToHost(ipAddress,8001);
 
 }
 
@@ -548,6 +618,7 @@ void MainWindow::socketReadyRead()
         if(pid == player1->get_id()){
             std::cout << "Udje se mrale" << std::endl;
             player1->setNextTask(NextTaskDomino::Wait);
+            refreshTaskLabel(ntd);
         }
 
         if(row >= 1 && row <= 4){

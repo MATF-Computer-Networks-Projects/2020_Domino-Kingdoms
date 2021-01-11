@@ -35,6 +35,9 @@
 #include <QDataStream>
 #include <QMessageBox>
 #include "otherscene.h"
+#include <QtNetwork>
+#include <QtCore>
+#include <QLabel>
 
 #include "../DominoKingdomsServer/signals.h"
 
@@ -92,6 +95,16 @@ private:
     Domino* dominoes[48];
     int m_idOnServer;
     int m_counterTurns;
+
+    QString insertedPort;
+    QString insertedIpAddress;
+
+    QString ipAddress;
+
+    bool canJoin;
+
+private:
+    void refreshTaskLabel(NextTaskDomino ntd);
 
 };
 

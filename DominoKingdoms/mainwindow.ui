@@ -21,7 +21,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>6</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="menuScreen">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -380,13 +380,13 @@
          <string>HOST</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="lblNetConfig">
         <property name="geometry">
          <rect>
           <x>207</x>
           <y>21</y>
-          <width>346</width>
-          <height>23</height>
+          <width>311</width>
+          <height>161</height>
          </rect>
         </property>
         <property name="minimumSize">
@@ -409,7 +409,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Start new game and invite your friends!</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLineEdit" name="leName">
@@ -423,15 +423,53 @@
         </property>
         <property name="font">
          <font>
-          <family>Tlwg Typo</family>
+          <family>Comic Sans MS</family>
           <pointsize>17</pointsize>
-          <weight>75</weight>
-          <italic>true</italic>
-          <bold>true</bold>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
          </font>
         </property>
         <property name="placeholderText">
          <string>Insert name</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lePort">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>430</y>
+          <width>201</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Comic Sans MS</family>
+          <pointsize>17</pointsize>
+         </font>
+        </property>
+        <property name="placeholderText">
+         <string>Insert port no.</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="leIpAddress">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>430</y>
+          <width>291</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Comic Sans MS</family>
+          <pointsize>17</pointsize>
+         </font>
+        </property>
+        <property name="placeholderText">
+         <string>Insert Ip Address</string>
         </property>
        </widget>
       </widget>
