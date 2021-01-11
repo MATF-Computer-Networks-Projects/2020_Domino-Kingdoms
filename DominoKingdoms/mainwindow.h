@@ -79,7 +79,8 @@ private slots:
     void slotReserveDomino();
     void slotUpdateColor();
     void slotChosenDomino();
-
+    void slotMoveIsMade();
+    void slotSendCalculatedPoints();
 
 private:
     Ui::MainWindow *ui;

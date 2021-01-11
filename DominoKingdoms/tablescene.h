@@ -72,6 +72,8 @@ private:
 
 signals:
     void updatedTable();
+    void moveIsMade();
+    void sendCalculatedPoints();
 
 public:
     int xp1,xp2,yp1,yp2;

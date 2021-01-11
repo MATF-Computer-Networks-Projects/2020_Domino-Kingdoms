@@ -23,6 +23,7 @@ private: //variables
     std::vector<std::vector<Field>> m_playerTable;
     QColor color;
     int m_currPlayer;
+    int m_points;
 
 public: //methods
 
@@ -55,6 +56,9 @@ public: //methods
     void checkNeighbours(QQueue<std::pair<int,int>> *bfsQueue, int x, int y);
     int BFS(int i, int j);
     int calculatePoints();
+    int getPoints() const;
+    void setPoints(int points);
+
 };
 
 #endif // PLAYER_H

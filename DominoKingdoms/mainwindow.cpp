@@ -186,6 +186,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dominoScene,&DominoScene::updateColor,this,&MainWindow::slotUpdateColor);
 
     connect(dominoScene, &DominoScene::signalChosenDomino,this,&MainWindow::slotChosenDomino);
+    connect(tableScene, &TableScene::moveIsMade, this, &MainWindow::slotMoveIsMade);
+    connect(tableScene, &TableScene::sendCalculatedPoints, this, &MainWindow::slotSendCalculatedPoints);
 }
 
 void MainWindow::slotReserveDomino()
@@ -229,6 +231,29 @@ void MainWindow::slotChosenDomino()
 
     out<<Signals::request_delete;
     out<<sid;
+
+    clientsSocket->write(block);
+}
+
+void MainWindow::slotMoveIsMade()
+{
+    QByteArray block;
+    QDataStream out(&block,QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+
+    out << Signals::move_is_made;
+
+    clientsSocket->write(block);
+}
+
+void MainWindow::slotSendCalculatedPoints()
+{
+    QByteArray block;
+    QDataStream out(&block,QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+
+    out << Signals::calculated_points;
+    out << player1->get_id() << player1->getPoints();
 
     clientsSocket->write(block);
 }
@@ -355,6 +380,7 @@ bool checkReserved(std::vector<DominoField*> column){
         if(column[i]->getDomino())
             if(column[i]->getDomino()->getPlayer() == nullptr)
                 return true;
+
     return false;
 }
 void MainWindow::take_cards_from_deck(){
@@ -363,21 +389,28 @@ void MainWindow::take_cards_from_deck(){
 
     bool notReservedColumn;
     if(ac == 1)
-        notReservedColumn = checkReserved(firstColumnDF);
-    else
         notReservedColumn = checkReserved(secondColumnDF);
+    else
+        notReservedColumn = checkReserved(firstColumnDF);
 
+    QMessageBox qmb;
     if(m_counterTurns >= 2){
-        if((!isEmptyColumn1() && !isEmptyColumn2()) || notReservedColumn){
-            QMessageBox qmb;
+        if((!isEmptyColumn1() && !isEmptyColumn2())){
+
             qmb.setText("Ne mere bez kabla");
+            qmb.exec();
+            return;
+        }
+        else if(notReservedColumn){
+
+            qmb.setText("Nisu svi igraci rezervisali domine");
             qmb.exec();
             return;
         }
     }
     else{
         if((!isEmptyColumn1() && !isEmptyColumn2())){
-            QMessageBox qmb;
+
             qmb.setText("Ne mere bez kabla");
             qmb.exec();
             return;
@@ -390,7 +423,6 @@ void MainWindow::take_cards_from_deck(){
     out<<Signals::request_cards;
 
     clientsSocket->write(block);
-    m_counterTurns++;
 }
 
 void MainWindow::throw_out_domino_clicked()
@@ -402,6 +434,7 @@ void MainWindow::throw_out_domino_clicked()
     tableScene->setClickedDomino(nullptr);
     tableScene->update(tableScene->view()->rect());
     tableScene->currentPlayer()->setNextTask(NextTaskDomino::ReserveDomino);
+    emit tableScene->moveIsMade();
 }
 
 void MainWindow::calculate_player_scores_clicked()
@@ -565,6 +598,7 @@ void MainWindow::socketReadyRead()
     }
 
     else if(type == Signals::sending_cards){
+        m_counterTurns++;
 
         int value[4];
         for(int i = 0; i < 4; i++)
@@ -630,6 +664,32 @@ void MainWindow::socketReadyRead()
             secondColumnDF[idx-5]->setIsEmpty(true);
         }
         dominoScene->update(dominoScene->view()->rect());
+    }
+
+    else if(type == Signals::end_game){
+        int points = player1->calculatePoints();
+        player1->setPoints(points);
+        emit tableScene->sendCalculatedPoints();
+    }
+
+    else if(type == Signals::sending_results){
+        QMessageBox qmb;
+
+        QString text = "";
+
+        for(int i = 0; i < 4; i++){
+            QString name;
+            m_in >> name;
+            int points;
+            m_in >> points;
+
+            text.append(name);
+            text.append(" ");
+            text.append(QString::number(points));
+            text.append("\n");
+        }
+        qmb.setText(text);
+        qmb.exec();
     }
 
     if(!m_in.commitTransaction()){
