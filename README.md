@@ -11,11 +11,30 @@ The game uses tiles with two sections, similar to Dominoes. Each turn, each play
 taken from https://boardgamegeek.com/boardgame/204583/kingdomino
 
 ### Authors
--  Nikola Jovanović
--  Jovan Stamenković
--  Marija Radović
+-  [Nikola Jovanović](nikolajovanov998@gmail.com)
+-  [Jovan Stamenković](stamenkovicjovan15@gmail.com)
+-  [Marija Radović](radovicmarija14@gmail.com)
+
+### Technologies
+- ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) Language: C++ 
+- ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) Work frame: Qt creator
 
 ### How to run the app?
-...
-### Preview photo
-...
+
+- open terminal
+- `git clone https://github.com/MATF-Computer-Networks-Projects/2020_Domino-Kingdoms.git`
+- `cd 2020_Domino-Kingdoms`
+- `cd DominoKingdomsServer`
+- `mkdir build`
+- `cd build`
+- `qmake ../DominoKingdomsServer.pro`
+- `make`
+- `cd ../DominoKingdoms`
+- `mkdir build`
+- `cd build`
+- `qmake ../DominoKingdoms.pro`
+- `make`
+- `./DominoKingdoms`
+
+### Note:
+- executable file that is on this repository is for Ubuntu OS.
