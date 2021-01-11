@@ -16,7 +16,7 @@ Player *player1;
 Game *game;
 
 QPushButton *ime;
-QLabel *lblNextTask;
+
 
 QGraphicsView *otherView;
 
@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *throwOutButton = initializeButton("Throw Out");
     QPushButton *calculateButton = initializeButton("Calculate");
     ime = initializeButton("x");
-    lblNextTask = new QLabel("label");
+    lblNextTask = new QLabel("Welcome to Domino Kingdoms!");
     QPushButton *deckButton = initializeButton("Deck");
     QPushButton *optionsButton = initializeButton("Options");
     QPushButton *quitButton = initializeButton("Quit");
@@ -123,7 +123,7 @@ MainWindow::MainWindow(QWidget *parent) :
     tableScene->setCurrentPlayer(player1);
 
     /* Setting up scenes */
-    CastleDomino *castle = new CastleDomino(2);
+    CastleDomino *castle = new CastleDomino(player1->get_id());
     tableScene->addItem(castle);
     player1->set_playerTableField(FieldType::Castle, 0, 2, 2);
 
@@ -194,10 +194,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dominoScene,&DominoScene::updateColor,this,&MainWindow::slotUpdateColor);
 
     connect(dominoScene, &DominoScene::signalChosenDomino,this,&MainWindow::slotChosenDomino);
+    connect(tableScene, &TableScene::moveIsMade, this, &MainWindow::slotMoveIsMade);
+    connect(tableScene, &TableScene::sendCalculatedPoints, this, &MainWindow::slotSendCalculatedPoints);
 }
 
 void MainWindow::slotReserveDomino()
 {
+    refreshTaskLabel(NextTaskDomino::ReserveDomino);
     //komunikacija sa serverom
     int pid = dominoScene->sPlayerId;
     int row = dominoScene->sDominoFieldNumber;
@@ -241,9 +244,9 @@ void MainWindow::slotChosenDomino()
     clientsSocket->write(block);
 }
 
+
 void MainWindow::refreshTaskLabel(NextTaskDomino ntd)
 {
-    std::cout<<"Udje u refresh."<<std::endl;
     QString newMsg;
     if(ntd == NextTaskDomino::Wait){
         newMsg = "It's not your turn";
@@ -252,12 +255,38 @@ void MainWindow::refreshTaskLabel(NextTaskDomino ntd)
         newMsg = "It's your turn.\nChoose reserved domino";
     }
     else if(ntd == NextTaskDomino::PlaceDomino){
-        newMsg = "It's your turn.\nPlace reserved domino";
+        newMsg = "";
     }
     else if(ntd == NextTaskDomino::ReserveDomino){
-        newMsg = "It's your turn.\nPlace domino";
+        newMsg = "It's your turn.\nReserve next domino";
     }
+    QFont font = QFont("Arial",17);
+    lblNextTask->setFont(font);
     lblNextTask->setText(newMsg);
+
+}
+
+void MainWindow::slotMoveIsMade()
+{
+    QByteArray block;
+    QDataStream out(&block,QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+
+    out << Signals::move_is_made;
+
+    clientsSocket->write(block);
+}
+
+void MainWindow::slotSendCalculatedPoints()
+{
+    QByteArray block;
+    QDataStream out(&block,QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_9);
+
+    out << Signals::calculated_points;
+    out << player1->get_id() << player1->getPoints();
+
+    clientsSocket->write(block);
 
 }
 
@@ -400,6 +429,7 @@ bool checkReserved(std::vector<DominoField*> column){
         if(column[i]->getDomino())
             if(column[i]->getDomino()->getPlayer() == nullptr)
                 return true;
+
     return false;
 }
 void MainWindow::take_cards_from_deck(){
@@ -408,21 +438,28 @@ void MainWindow::take_cards_from_deck(){
 
     bool notReservedColumn;
     if(ac == 1)
-        notReservedColumn = checkReserved(firstColumnDF);
-    else
         notReservedColumn = checkReserved(secondColumnDF);
+    else
+        notReservedColumn = checkReserved(firstColumnDF);
 
+    QMessageBox qmb;
     if(m_counterTurns >= 2){
-        if((!isEmptyColumn1() && !isEmptyColumn2()) || notReservedColumn){
-            QMessageBox qmb;
+        if((!isEmptyColumn1() && !isEmptyColumn2())){
+
             qmb.setText("Ne mere bez kabla");
+            qmb.exec();
+            return;
+        }
+        else if(notReservedColumn){
+
+            qmb.setText("Nisu svi igraci rezervisali domine");
             qmb.exec();
             return;
         }
     }
     else{
         if((!isEmptyColumn1() && !isEmptyColumn2())){
-            QMessageBox qmb;
+
             qmb.setText("Ne mere bez kabla");
             qmb.exec();
             return;
@@ -435,7 +472,6 @@ void MainWindow::take_cards_from_deck(){
     out<<Signals::request_cards;
 
     clientsSocket->write(block);
-    m_counterTurns++;
 }
 
 void MainWindow::throw_out_domino_clicked()
@@ -447,6 +483,7 @@ void MainWindow::throw_out_domino_clicked()
     tableScene->setClickedDomino(nullptr);
     tableScene->update(tableScene->view()->rect());
     tableScene->currentPlayer()->setNextTask(NextTaskDomino::ReserveDomino);
+    emit tableScene->moveIsMade();
 }
 
 void MainWindow::calculate_player_scores_clicked()
@@ -457,6 +494,7 @@ void MainWindow::calculate_player_scores_clicked()
 
 void MainWindow::getPlayer1Clicked()
 {
+    lastBtnPressed = 1;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_9);
@@ -471,6 +509,7 @@ void MainWindow::getPlayer1Clicked()
 
 void MainWindow::getPlayer2Clicked()
 {
+    lastBtnPressed = 2;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_9);
@@ -484,6 +523,7 @@ void MainWindow::getPlayer2Clicked()
 
 void MainWindow::getPlayer3Clicked()
 {
+    lastBtnPressed = 3;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_9);
@@ -540,7 +580,7 @@ void MainWindow::joinServerClicked()
     connect(clientsSocket,SIGNAL(disconnected()),this,SLOT(socketDisconnected()));
     connect(clientsSocket,SIGNAL(readyRead()),this,SLOT(socketReadyRead()));
 
-    clientsSocket->connectToHost(ipAddress,8001);
+    clientsSocket->connectToHost(insertedIpAddress,8001);
 
 }
 
@@ -586,6 +626,14 @@ void MainWindow::socketReadyRead()
                 otherScene->addItem(field);
             }
         }
+        if(lastBtnPressed == player1->get_id())
+            lastBtnPressed = 4;
+        CastleDomino *cd = new CastleDomino(lastBtnPressed);
+        cd->setXP(200);
+        cd->setYP(200);
+        cd->setWidth(100);
+        cd->setHeight(100);
+        otherScene->addItem(cd);
         otherScene->update(otherScene->view()->rect());
 
     }
@@ -612,13 +660,18 @@ void MainWindow::socketReadyRead()
 
         std::cout << "PID: " << pid << std::endl;
         std::cout << "ROW :" << row << std::endl;
-        if(pp == player1->get_id())
-            player1->setNextTask(ntd);
+
+
 
         if(pid == player1->get_id()){
             std::cout << "Udje se mrale" << std::endl;
             player1->setNextTask(NextTaskDomino::Wait);
-            refreshTaskLabel(ntd);
+            refreshTaskLabel(NextTaskDomino::Wait);
+        }
+
+        if(pp == player1->get_id()){
+            player1->setNextTask(ntd);
+            refreshTaskLabel(NextTaskDomino::ChooseDomino);
         }
 
         if(row >= 1 && row <= 4){
@@ -636,6 +689,7 @@ void MainWindow::socketReadyRead()
     }
 
     else if(type == Signals::sending_cards){
+        m_counterTurns++;
 
         int value[4];
         for(int i = 0; i < 4; i++)
@@ -703,6 +757,32 @@ void MainWindow::socketReadyRead()
         dominoScene->update(dominoScene->view()->rect());
     }
 
+    else if(type == Signals::end_game){
+        int points = player1->calculatePoints();
+        player1->setPoints(points);
+        emit tableScene->sendCalculatedPoints();
+    }
+
+    else if(type == Signals::sending_results){
+        QMessageBox qmb;
+
+        QString text = "";
+
+        for(int i = 0; i < 4; i++){
+            QString name;
+            m_in >> name;
+            int points;
+            m_in >> points;
+
+            text.append(name);
+            text.append(" ");
+            text.append(QString::number(points));
+            text.append("\n");
+        }
+        qmb.setText(text);
+        qmb.exec();
+    }
+
     if(!m_in.commitTransaction()){
         return;
     }
@@ -710,6 +790,7 @@ void MainWindow::socketReadyRead()
 
 void MainWindow::recieveUpdate()
 {
+    refreshTaskLabel(NextTaskDomino::ReserveDomino);
     int nxp1 = tableScene->xp1;
     int nxp2 = tableScene->xp2;
     int nyp1 = tableScene->yp1;

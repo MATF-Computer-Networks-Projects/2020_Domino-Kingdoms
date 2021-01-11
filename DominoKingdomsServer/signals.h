@@ -21,6 +21,10 @@ public:
     const static int send_color = 15;
     const static int request_delete = 16;
     const static int send_delete = 17;
+    const static int move_is_made = 18;
+    const static int end_game = 19;
+    const static int calculated_points = 20;
+    const static int sending_results = 21;
 };
 
 #endif // SIGNALS_H

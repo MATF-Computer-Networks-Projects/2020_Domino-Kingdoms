@@ -38,6 +38,7 @@
 #include <QtNetwork>
 #include <QtCore>
 #include <QLabel>
+#include <QFont>
 
 #include "../DominoKingdomsServer/signals.h"
 
@@ -82,7 +83,8 @@ private slots:
     void slotReserveDomino();
     void slotUpdateColor();
     void slotChosenDomino();
-
+    void slotMoveIsMade();
+    void slotSendCalculatedPoints();
 
 private:
     Ui::MainWindow *ui;
@@ -101,11 +103,16 @@ private:
 
     QString ipAddress;
 
+    int lastBtnPressed;
+
     bool canJoin;
 
 private:
     void refreshTaskLabel(NextTaskDomino ntd);
 
+
+public:
+    QLabel *lblNextTask;
 };
 
 #endif // MAINWINDOW_H

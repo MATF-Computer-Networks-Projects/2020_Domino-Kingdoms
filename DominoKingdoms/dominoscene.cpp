@@ -95,6 +95,7 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             sDominoFieldNumber = m_clickedDomino->getS_id();
             emit signalChosenDomino();
 
+
         }
         else if(m_p1->get_nextTask() == NextTaskDomino::ReserveDomino){
             if(m_reserveCounter >= 1){

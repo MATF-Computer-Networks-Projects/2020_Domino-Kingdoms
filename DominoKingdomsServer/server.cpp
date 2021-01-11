@@ -13,6 +13,7 @@ server::server(QObject *parent)
     currIndexPlayer = 0;
     playingPlayer = 1;
     beginning = true;
+    numOfDominoesUsed = 0;
 }
 
 server::~server()
@@ -107,6 +108,11 @@ void server::socketReadyRead()
         _clients[client]->set_playerTableField((FieldType)nft1,nc1,nxp1,nyp1);
         _clients[client]->set_playerTableField((FieldType)nft2,nc2,nxp2,nyp2);
 
+        numOfDominoesUsed++;
+        if(numOfDominoesUsed == 4){
+            std::cout << "KRAJ IGRE" << std::endl;
+            processEndGame();
+        }
 
     }
 
@@ -369,6 +375,39 @@ void server::socketReadyRead()
 
     }
 
+    else if(type == Signals::move_is_made){
+        numOfDominoesUsed++;
+        if(numOfDominoesUsed == 4){
+            std::cout << "KRAJ IGRE" << std::endl;
+            processEndGame();
+        }
+    }
+
+    else if(type == Signals::calculated_points){
+        int pid;
+        _in >> pid;
+        int points;
+        _in >> points;
+
+        endGamePoints.insert(QString::fromStdString(_clients[client]->get_name()), points);
+
+        if(endGamePoints.size() == 4){
+            for(auto it = _clients.begin(); it!=_clients.end();it++){
+
+                QByteArray block;
+                QDataStream out(&block,QIODevice::WriteOnly);
+                out.setVersion(QDataStream::Qt_5_9);
+
+                out<<Signals::sending_results;
+
+                for(auto it2 = endGamePoints.begin(); it2 != endGamePoints.end(); it2++){
+                    out << it2.key() << it2.value();
+                }
+                _clients.key(*it)->write(block);
+            }
+        }
+    }
+
     if(!_in.commitTransaction()){
         return;
     }
@@ -456,4 +495,19 @@ void server::setDeck(){
 
     std::srand(unsigned(std::time(0)));
     std::random_shuffle(std::begin(dominoes), std::end(dominoes));
+}
+
+void server::processEndGame()
+{
+    auto it = _clients.begin();
+    for(it = _clients.begin(); it != _clients.end(); it++){
+
+        QByteArray block;
+        QDataStream out(&block,QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_9);
+
+        out<<Signals::end_game;
+
+        _clients.key((*it))->write(block);
+    }
 }

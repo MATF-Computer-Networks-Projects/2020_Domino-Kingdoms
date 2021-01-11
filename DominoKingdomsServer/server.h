@@ -31,6 +31,7 @@ public:
     ~server();
     void startServer();
     void setDeck();
+    void processEndGame();
 
 public slots:
     void newClientConnection();
@@ -54,6 +55,10 @@ private:
     QString playerName;
 
     bool beginning;
+
+    int numOfDominoesUsed;
+
+    QMap <QString, int> endGamePoints;
 
 public:
     int nextPlayersId;

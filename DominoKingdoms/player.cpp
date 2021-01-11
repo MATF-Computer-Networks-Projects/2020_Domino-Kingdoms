@@ -144,6 +144,16 @@ int Player::calculatePoints()
     return score;
 }
 
+int Player::getPoints() const
+{
+    return m_points;
+}
+
+void Player::setPoints(int points)
+{
+    m_points = points;
+}
+
 Player::Player(std::string name, int id):
     m_name(name), m_id(id){
 
@@ -151,6 +161,7 @@ Player::Player(std::string name, int id):
     for(int i=0; i<tableFields; i++)
         m_playerTable[i].resize(tableFields,Field(FieldType::Empty,0));
     m_playerTable[tableFields/2][tableFields/2] = Field(FieldType::Castle,0);
+    m_points = 0;
     if(id != 0)
         m_nextTask = NextTaskDomino::Wait;
     else
