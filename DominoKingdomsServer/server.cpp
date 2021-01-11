@@ -283,9 +283,20 @@ void server::socketReadyRead()
         if(currIndexPlayer > 3){
             currIndexPlayer = 0;
             beginning = false;
+
+            for(int i = 0; i < 4; i++){
+                currentTurn[i] = nextTurn[i];
+                std::cout << "NIZ: " << currentTurn[i] << std::endl;
+            }
+
+            nextTurn.clear();
+            nextTurn.reserve(4);
         }
 
         playingPlayer = currentTurn[currIndexPlayer];
+
+        std::cout << "Odigrao: " << pid << std::endl;
+        std::cout << "Igra: " << playingPlayer << std::endl;
 
         auto it = _clients.begin();
         for(it = _clients.begin(); it != _clients.end(); it++){
@@ -310,13 +321,6 @@ void server::socketReadyRead()
             std::cout << "dosta ste se kartali" << std::endl;
             return;
         }
-
-        for(int i = 0; i < 4; i++){
-            currentTurn[i] = nextTurn[i];
-        }
-
-        nextTurn.clear();
-        nextTurn.reserve(4);
 
         std::vector<Domino *> temp;
         temp.clear();

@@ -357,7 +357,7 @@ void Domino::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget 
         }
         else if(m_dominoStatus == DominoStatus::Reserved){
             pen.setColor(m_player->getColor());
-            pen.setWidth(2);
+            pen.setWidth(5);
 
             painter->setPen(pen);
             painter->drawRect(q);

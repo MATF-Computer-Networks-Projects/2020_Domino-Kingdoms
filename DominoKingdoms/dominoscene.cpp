@@ -24,6 +24,7 @@ std::pair<int, int> coordinatesToIndex(int x, int y){
 DominoScene::DominoScene(QObject *o)
 {
     this->setParent(o);
+    m_reserveCounter = 0;
 }
 
 std::vector<DominoField *> *DominoScene::firstRow() const
@@ -66,7 +67,7 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             return;
 
         m_clickedDomino = (*column)[index]->getDomino();
-        std::cout << "Stigo dovde" << std::endl;
+
         if(m_p1->get_nextTask() == NextTaskDomino::ChooseDomino &&
                 m_clickedDomino->getPlayer()->get_id() == m_p1->get_id()){
 
@@ -96,6 +97,17 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
 
         }
         else if(m_p1->get_nextTask() == NextTaskDomino::ReserveDomino){
+            if(m_reserveCounter >= 1){
+                if(id == m_activeColumn)
+                    return;
+            }
+            else{
+                if(id != m_activeColumn)
+                    return;
+            }
+//            if(!(id == m_activeColumn || m_reserveCounter < 4)){
+//                return;
+//            }
             if(m_clickedDomino->getPlayer() != nullptr){
                 std::cout << "rezervisano mrale" << std::endl;
                 return;
@@ -109,6 +121,7 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
             sDominoFieldNumber = m_clickedDomino->getS_id();
 
             emit signalReservedDomino();
+            m_reserveCounter++;
         }
     }
 }

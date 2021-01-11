@@ -48,6 +48,8 @@ private:
     Player *m_p1;
     TableScene *m_otherScene;
     int m_activeColumn;
+    int m_reserveCounter;
+
 
 signals:
     void signalReservedDomino();

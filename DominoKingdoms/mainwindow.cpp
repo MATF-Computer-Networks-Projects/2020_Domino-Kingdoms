@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
+    m_counterTurns = 0;
     setDeck();
     m_connected = false;
 
@@ -348,12 +349,39 @@ bool isEmptyColumn2(){
     return false;
 }
 
+bool checkReserved(std::vector<DominoField*> column){
+
+    for(int i = 0; i < 4; i++)
+        if(column[i]->getDomino())
+            if(column[i]->getDomino()->getPlayer() == nullptr)
+                return true;
+    return false;
+}
 void MainWindow::take_cards_from_deck(){
 
-    if(!isEmptyColumn1() && !isEmptyColumn2()){
-        QMessageBox qmb;
-        qmb.setText("Ne mere bez kabla");
-        qmb.exec();
+    int ac = dominoScene->activeColumn();
+
+    bool notReservedColumn;
+    if(ac == 1)
+        notReservedColumn = checkReserved(firstColumnDF);
+    else
+        notReservedColumn = checkReserved(secondColumnDF);
+
+    if(m_counterTurns >= 2){
+        if((!isEmptyColumn1() && !isEmptyColumn2()) || notReservedColumn){
+            QMessageBox qmb;
+            qmb.setText("Ne mere bez kabla");
+            qmb.exec();
+            return;
+        }
+    }
+    else{
+        if((!isEmptyColumn1() && !isEmptyColumn2())){
+            QMessageBox qmb;
+            qmb.setText("Ne mere bez kabla");
+            qmb.exec();
+            return;
+        }
     }
 
     QByteArray block;
@@ -362,6 +390,7 @@ void MainWindow::take_cards_from_deck(){
     out<<Signals::request_cards;
 
     clientsSocket->write(block);
+    m_counterTurns++;
 }
 
 void MainWindow::throw_out_domino_clicked()
@@ -516,8 +545,10 @@ void MainWindow::socketReadyRead()
         if(pp == player1->get_id())
             player1->setNextTask(ntd);
 
-        if(pid == player1->get_id())
+        if(pid == player1->get_id()){
+            std::cout << "Udje se mrale" << std::endl;
             player1->setNextTask(NextTaskDomino::Wait);
+        }
 
         if(row >= 1 && row <= 4){
             firstColumnDF[row-1]->getDomino()->setDominoStatus(DominoStatus::Reserved);

@@ -91,6 +91,7 @@ private:
     QString playerName;
     Domino* dominoes[48];
     int m_idOnServer;
+    int m_counterTurns;
 
 };
 
