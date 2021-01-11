@@ -150,7 +150,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainScreenLayout->addWidget(throwOutButton, 11, 3, 2, 1);
     mainScreenLayout->addWidget(calculateButton, 11, 4, 2, 1);
     mainScreenLayout->addWidget(ime, 11, 5, 2, 1);
-    mainScreenLayout->addWidget(lblNextTask,11,6,2,1);
+    mainScreenLayout->addWidget(lblNextTask,11,6,2,2);
     mainScreenLayout->addWidget(deckButton, 0, 9, 1, 1);
     mainScreenLayout->addWidget(optionsButton, 11, 9, 1, 1);
     mainScreenLayout->addWidget(quitButton, 12, 9, 1, 1);

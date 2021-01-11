@@ -80,12 +80,13 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
 
             std::cout << "res counter: " << m_reserveCounter << std::endl;
             if(m_reserveCounter > 1){
-                if((m_activeColumn == 2 && id == 2) || (m_activeColumn == 1 && id == 1))
+                std::cout << "AC: " << m_activeColumn << std::endl;
+                if((m_activeColumn == 1 && id == 2) || (m_activeColumn == 2 && id == 1))
                     return;
             }
             else {
                 std::cout << "udjoo" << std::endl;
-                if((m_activeColumn == 2 && id == 1) || (m_activeColumn == 1 && id == 2))
+                if((m_activeColumn == 1 && id == 2) || (m_activeColumn == 2 && id == 1))
                     return;
             }
 
