@@ -109,7 +109,7 @@ void server::socketReadyRead()
         _clients[client]->set_playerTableField((FieldType)nft2,nc2,nxp2,nyp2);
 
         numOfDominoesUsed++;
-        if(numOfDominoesUsed == 4){
+        if(numOfDominoesUsed == 48){
             std::cout << "KRAJ IGRE" << std::endl;
             processEndGame();
         }
@@ -377,7 +377,7 @@ void server::socketReadyRead()
 
     else if(type == Signals::move_is_made){
         numOfDominoesUsed++;
-        if(numOfDominoesUsed == 4){
+        if(numOfDominoesUsed == 48){
             std::cout << "KRAJ IGRE" << std::endl;
             processEndGame();
         }

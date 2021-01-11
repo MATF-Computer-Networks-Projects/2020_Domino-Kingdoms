@@ -56,6 +56,8 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
         std::pair<int, int> position = coordinatesToIndex(x, y);
         int id = position.first;
         int index = position.second;
+
+        std::cout << "ID: " << id << " INDEX: " << index << std::endl;
         std::vector<DominoField*> *column;
 
         if(id == 1)
@@ -66,13 +68,26 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
         if(id == -1 || index == -1)
             return;
 
+        std::cout << "ID: " << id << " INDEX: " << index << std::endl;
+
         m_clickedDomino = (*column)[index]->getDomino();
+        if(m_clickedDomino == nullptr)
+            return;
 
-        if(m_p1->get_nextTask() == NextTaskDomino::ChooseDomino &&
-                m_clickedDomino->getPlayer()->get_id() == m_p1->get_id()){
-
-            if((m_activeColumn == 1 && id == 2) || (m_activeColumn == 2 && id == 1))
+        if(m_p1->get_nextTask() == NextTaskDomino::ChooseDomino && m_clickedDomino->getPlayer()){
+            if(m_clickedDomino->getPlayer()->get_id() != m_p1->get_id())
                 return;
+
+            std::cout << "res counter: " << m_reserveCounter << std::endl;
+            if(m_reserveCounter > 1){
+                if((m_activeColumn == 2 && id == 2) || (m_activeColumn == 1 && id == 1))
+                    return;
+            }
+            else {
+                std::cout << "udjoo" << std::endl;
+                if((m_activeColumn == 2 && id == 1) || (m_activeColumn == 1 && id == 2))
+                    return;
+            }
 
             this->removeItem((*column)[index]->getDomino());
             (*column)[index]->setDomino(nullptr);
@@ -105,9 +120,6 @@ void DominoScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent){
                 if(id != m_activeColumn)
                     return;
             }
-//            if(!(id == m_activeColumn || m_reserveCounter < 4)){
-//                return;
-//            }
             if(m_clickedDomino->getPlayer() != nullptr){
                 std::cout << "rezervisano mrale" << std::endl;
                 return;
